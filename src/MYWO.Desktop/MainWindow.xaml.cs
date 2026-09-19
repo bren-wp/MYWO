@@ -37,13 +37,62 @@ public partial class MainWindow : Window
         InitializeComponent();
         SourceInitialized += (_, _) => ApplyWindows11Chrome();
         DatabasePathText.Text = $"Baza: {AppDb.DatabasePath}";
-        var appVersion = typeof(MainWindow).Assembly.GetName().Version?.ToString(3) ?? "0.9.0";
+        var appVersion = typeof(MainWindow).Assembly.GetName().Version?.ToString(3) ?? "0.9.1";
         ReleaseModeText.Text = $"MYWO v{appVersion} • {(AppPaths.IsPortable ? "Portable" : "Instalirana verzija")}";
         SidebarVersionText.Text = $"MYWO v{appVersion}";
         _scheduleTimer.Tick += ScheduleTimer_Tick;
         _scheduleTimer.Start();
         LoadCompanies();
         Show("dashboard");
+        Loaded += (_, _) => ApplyResponsiveLayout();
+    }
+
+    private void Window_SizeChanged(object sender, SizeChangedEventArgs e) => ApplyResponsiveLayout();
+
+    private void ApplyResponsiveLayout()
+    {
+        var width = ActualWidth > 0 ? ActualWidth : Width;
+        if (width <= 0) return;
+
+        var compact = width < 1180;
+        var narrow = width < 1000;
+
+        SidebarColumn.Width = new GridLength(compact ? (narrow ? 68 : 76) : 214);
+        SidebarBrandText.Visibility = compact ? Visibility.Collapsed : Visibility.Visible;
+        SidebarPromoCard.Visibility = compact ? Visibility.Collapsed : Visibility.Visible;
+        SidebarFooterRow.Height = new GridLength(compact ? 38 : 116);
+        SidebarVersionText.HorizontalAlignment = compact ? HorizontalAlignment.Center : HorizontalAlignment.Left;
+        SidebarVersionText.Margin = compact ? new Thickness(0, 6, 0, 0) : new Thickness(5, 8, 0, 0);
+
+        foreach (var nav in new[] { NavDashboard, NavProducts, NavServices, NavCategories, NavBrands, NavPublish, NavApi, NavHistory, NavPrices, NavAudit, NavCompanies, NavSettings })
+        {
+            nav.HorizontalContentAlignment = compact ? HorizontalAlignment.Center : HorizontalAlignment.Stretch;
+            if (nav.Content is DockPanel dock)
+            {
+                var labels = dock.Children.OfType<TextBlock>().ToArray();
+                if (labels.Length > 1) labels[1].Visibility = compact ? Visibility.Collapsed : Visibility.Visible;
+            }
+        }
+
+        TopbarCompanyColumn.Width = new GridLength(compact ? (narrow ? 142 : 170) : 225);
+        TopbarActionsColumn.Width = new GridLength(compact ? 94 : 270);
+        CompanyCombo.Width = compact ? (narrow ? 128 : 150) : 190;
+        GlobalSearchContainer.Width = double.NaN;
+        GlobalSearchContainer.MaxWidth = compact ? (narrow ? 330 : 420) : 520;
+
+        TopPublishButton.Width = compact ? 42 : 145;
+        TopPublishText.Visibility = compact ? Visibility.Collapsed : Visibility.Visible;
+        TopPublishIcon.Margin = compact ? new Thickness(0) : new Thickness(0, 0, 9, 0);
+        HeaderContextPanel.Visibility = compact ? Visibility.Collapsed : Visibility.Visible;
+        MainPageHost.Margin = narrow ? new Thickness(12, 12, 12, 6) : compact ? new Thickness(16, 14, 16, 7) : new Thickness(20, 16, 20, 8);
+
+        ProductDrawer.Width = narrow ? 350 : compact ? 390 : 422;
+        ServiceDrawer.Width = narrow ? 350 : compact ? 390 : 420;
+
+        SettingsCompaniesColumn.Width = new GridLength(compact ? 0.72 : 0.82, GridUnitType.Star);
+        SettingsCompaniesColumn.MinWidth = narrow ? 220 : 240;
+        SettingsSystemColumn.MinWidth = narrow ? 390 : 430;
+        NotificationPopup.HorizontalOffset = narrow ? -260 : -310;
     }
 
     private void LoadCompanies()
@@ -1439,6 +1488,7 @@ public partial class MainWindow : Window
             var bitmap = new BitmapImage();
             bitmap.BeginInit();
             bitmap.CacheOption = BitmapCacheOption.OnLoad;
+            bitmap.DecodePixelWidth = 800;
             bitmap.UriSource = new Uri(path, UriKind.Absolute);
             bitmap.EndInit();
             bitmap.Freeze();
