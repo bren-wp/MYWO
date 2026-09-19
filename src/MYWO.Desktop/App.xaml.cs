@@ -35,7 +35,12 @@ public partial class App : Application
 
     private static void FitWindowToWorkArea(object sender, RoutedEventArgs e)
     {
-        if (sender is not Window window || window.WindowState != WindowState.Normal) return;
+        if (sender is Window window) FitWindowToCurrentWorkArea(window);
+    }
+
+    internal static void FitWindowToCurrentWorkArea(Window window)
+    {
+        if (window.WindowState != WindowState.Normal) return;
 
         var work = GetMonitorWorkArea(window);
         const double inset = 12;
