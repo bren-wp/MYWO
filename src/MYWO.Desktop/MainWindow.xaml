@@ -202,10 +202,7 @@
                         <!-- DASHBOARD -->
                         <ScrollViewer x:Name="DashboardPanel" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                             <StackPanel Margin="0,0,6,0">
-                                <Grid Margin="0,2,0,12" Height="136">
-                                    <Grid.ColumnDefinitions>
-                                        <ColumnDefinition/><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/><ColumnDefinition Width="1.08*"/>
-                                    </Grid.ColumnDefinitions>
+                                <UniformGrid x:Name="DashboardKpiGrid" Columns="6" Margin="0,2,0,12" Height="136">
 
                                     <Border Grid.Column="0" Style="{StaticResource CardBorder}" Background="{StaticResource GreenCardGradient}" Margin="0,0,8,0" Padding="13">
                                         <Grid><Grid.ColumnDefinitions><ColumnDefinition Width="43"/><ColumnDefinition/></Grid.ColumnDefinitions>
@@ -243,7 +240,7 @@
                                             <StackPanel Grid.Column="1"><TextBlock Text="Zadnja objava" FontSize="11"/><TextBlock x:Name="LastPublishText" Text="Još nema objava" FontSize="13" FontWeight="SemiBold" TextWrapping="Wrap"/><TextBlock Text="● Uspješno" Foreground="{StaticResource SuccessBrush}" FontSize="10" Margin="0,4,0,0"/></StackPanel>
                                         </Grid>
                                     </Border>
-                                </Grid>
+                                </UniformGrid>
 
                                 <Grid Height="290">
                                     <Grid.ColumnDefinitions><ColumnDefinition Width="1.65*"/><ColumnDefinition Width="1*"/></Grid.ColumnDefinitions>
@@ -561,16 +558,15 @@
                         <!-- PUBLISH -->
                         <ScrollViewer x:Name="PublishPanel" Visibility="Collapsed" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                             <StackPanel Margin="0,0,5,0">
-                                <Grid Height="112">
-                                    <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+                                <UniformGrid x:Name="PublishKpiGrid" Columns="5" Height="112">
                                     <Border Grid.Column="0" Style="{StaticResource CardBorder}" Background="{StaticResource GreenCardGradient}" Margin="0,0,7,0" Padding="13"><StackPanel><TextBlock Text="Status objave" Foreground="{StaticResource MutedBrush}" FontSize="10"/><TextBlock Text="● Uspješno" FontSize="19" FontWeight="SemiBold" Foreground="#B5FFE0" Margin="0,6,0,0"/><TextBlock x:Name="PublishLastTimeText" Text="Još nema objave" Foreground="{StaticResource MutedBrush}" FontSize="10" Margin="0,6,0,0"/></StackPanel></Border>
                                     <Border Grid.Column="1" Style="{StaticResource CardBorder}" Background="{StaticResource BlueCardGradient}" Margin="0,0,7,0" Padding="13"><StackPanel><TextBlock Text="Aktivna tvrtka" Foreground="{StaticResource MutedBrush}" FontSize="10"/><TextBlock x:Name="PublishCompanyText" Text="Tvrtka A" FontSize="18" FontWeight="SemiBold" Margin="0,6,0,0"/><TextBlock Text="Glavni cjenik" Foreground="{StaticResource MutedBrush}" FontSize="10" Margin="0,7,0,0"/></StackPanel></Border>
                                     <Border Grid.Column="2" Style="{StaticResource CardBorder}" Background="{StaticResource PurpleCardGradient}" Margin="0,0,7,0" Padding="13"><StackPanel><TextBlock Text="Izlazna putanja" Foreground="{StaticResource MutedBrush}" FontSize="10"/><TextBlock Text="/public/cjenik/" FontSize="16" FontWeight="SemiBold" Margin="0,6,0,0"/><TextBlock Text="XML + CSV" Foreground="{StaticResource MutedBrush}" FontSize="10" Margin="0,7,0,0"/></StackPanel></Border>
                                     <Border Grid.Column="3" Style="{StaticResource CardBorder}" Background="{StaticResource AmberCardGradient}" Margin="0,0,7,0" Padding="13"><StackPanel><TextBlock Text="Lokalni API" Foreground="{StaticResource MutedBrush}" FontSize="10"/><TextBlock x:Name="PublishApiCardText" Text="Zaustavljen" FontSize="17" FontWeight="SemiBold" Margin="0,6,0,0"/><TextBlock Text="127.0.0.1" Foreground="{StaticResource MutedBrush}" FontSize="10" Margin="0,7,0,0"/></StackPanel></Border>
                                     <Border Grid.Column="4" Style="{StaticResource CardBorder}" Background="{StaticResource GreenCardGradient}" Padding="13"><StackPanel><TextBlock Text="Integritet podataka" Foreground="{StaticResource MutedBrush}" FontSize="10"/><TextBlock Text="● Ispravan" FontSize="17" FontWeight="SemiBold" Foreground="#B5FFE0" Margin="0,6,0,0"/><TextBlock Text="SHA-256" Foreground="{StaticResource MutedBrush}" FontSize="10" Margin="0,7,0,0"/></StackPanel></Border>
-                                </Grid>
+                                </UniformGrid>
 
-                                <UniformGrid Columns="4" Margin="0,9,0,9">
+                                <UniformGrid x:Name="PublishActionGrid" Columns="4" Margin="0,9,0,9">
                                     <Button Style="{StaticResource PrimaryButton}" Height="58" Content="Objavi XML" Click="PublishXml_Click"/>
                                     <Button Style="{StaticResource PrimaryButton}" Height="58" Content="Objavi CSV" Click="PublishCsv_Click"/>
                                     <Button Style="{StaticResource PrimaryButton}" Height="58" Background="{StaticResource PurpleBrush}" BorderBrush="#A78BFA" Content="Objavi sve" Click="Publish_Click"/>
@@ -613,14 +609,13 @@
                         <!-- API -->
                         <ScrollViewer x:Name="ApiPanel" Visibility="Collapsed" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                             <Grid x:Name="ApiLayoutGrid" MinHeight="620">
-                            <Grid.RowDefinitions><RowDefinition Height="100"/><RowDefinition Height="355"/><RowDefinition Height="*"/></Grid.RowDefinitions>
-                            <Grid Grid.Row="0" Margin="0,0,0,9">
-                                <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/><ColumnDefinition Width="176"/></Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="355"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+                            <UniformGrid x:Name="ApiKpiGrid" Grid.Row="0" Columns="4" Height="100" Margin="0,0,0,9">
                                 <Border Grid.Column="0" Style="{StaticResource CardBorder}" Background="{StaticResource GreenCardGradient}" Margin="0,0,9,0" Padding="13"><Grid><Grid.ColumnDefinitions><ColumnDefinition Width="50"/><ColumnDefinition/></Grid.ColumnDefinitions><Border Width="42" Height="42" CornerRadius="10" Background="#12634B"><TextBlock Style="{StaticResource IconText}" Text="&#xE192;" Foreground="#7CF6BD" FontSize="21"/></Border><StackPanel Grid.Column="1"><TextBlock x:Name="ApiActiveCountText" Text="0" FontSize="26" FontWeight="Bold"/><TextBlock Text="Aktivnih ključeva" Foreground="{StaticResource MutedBrush}" FontSize="10"/></StackPanel></Grid></Border>
                                 <Border Grid.Column="1" Style="{StaticResource CardBorder}" Background="{StaticResource BlueCardGradient}" Margin="0,0,9,0" Padding="13"><Grid><Grid.ColumnDefinitions><ColumnDefinition Width="50"/><ColumnDefinition/></Grid.ColumnDefinitions><Border Width="42" Height="42" CornerRadius="10" Background="#164B87"><TextBlock Style="{StaticResource IconText}" Text="&#xE83E;" Foreground="#65D0FF" FontSize="21"/></Border><StackPanel Grid.Column="1"><TextBlock x:Name="ApiRequestCountText" Text="0" FontSize="26" FontWeight="Bold"/><TextBlock Text="API zahtjeva • zadnjih 30 dana" Foreground="{StaticResource MutedBrush}" FontSize="10"/></StackPanel></Grid></Border>
                                 <Border Grid.Column="2" Style="{StaticResource CardBorder}" Background="{StaticResource PurpleCardGradient}" Margin="0,0,9,0" Padding="13"><Grid><Grid.ColumnDefinitions><ColumnDefinition Width="50"/><ColumnDefinition/></Grid.ColumnDefinitions><Border Width="42" Height="42" CornerRadius="10" Background="#5034A5"><TextBlock Style="{StaticResource IconText}" Text="&#xE916;" Foreground="#D6C1FF" FontSize="21"/></Border><StackPanel Grid.Column="1"><TextBlock x:Name="ApiSuccessRateText" Text="100,0%" FontSize="26" FontWeight="Bold"/><TextBlock Text="Uspješnih zahtjeva" Foreground="{StaticResource MutedBrush}" FontSize="10"/></StackPanel></Grid></Border>
                                 <Button Grid.Column="3" Style="{StaticResource PrimaryButton}" Content="＋  Generiraj ključ" Click="NewApiKey_Click" Margin="0,4"/>
-                            </Grid>
+                            </UniformGrid>
                             <Border Grid.Row="1" Style="{StaticResource CardBorder}" Padding="0" Margin="0,0,0,9">
                                 <Grid><Grid.RowDefinitions><RowDefinition Height="48"/><RowDefinition Height="*"/></Grid.RowDefinitions>
                                     <DockPanel Margin="15,0"><TextBlock Text="Svi API ključevi" Style="{StaticResource SectionTitle}" VerticalAlignment="Center"/><TextBlock DockPanel.Dock="Right" Text="Ključevi, dozvole i korištenje" Foreground="{StaticResource MutedBrush}" FontSize="10" VerticalAlignment="Center"/></DockPanel>
@@ -669,13 +664,13 @@
                         <!-- PRICE HISTORY -->
                         <ScrollViewer x:Name="PricesPanel" Visibility="Collapsed" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                             <Grid x:Name="PricesLayoutGrid" MinHeight="620">
-                            <Grid.RowDefinitions><RowDefinition Height="98"/><RowDefinition Height="250"/><RowDefinition Height="48"/><RowDefinition Height="*"/></Grid.RowDefinitions>
-                            <Grid Grid.Row="0" Margin="0,0,0,9"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
+                            <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="250"/><RowDefinition Height="48"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+                            <UniformGrid x:Name="PriceKpiGrid" Grid.Row="0" Columns="4" Height="98" Margin="0,0,0,9">
                                 <Border Grid.Column="0" Style="{StaticResource CardBorder}" Background="{StaticResource GreenCardGradient}" Margin="0,0,8,0" Padding="13"><StackPanel><TextBlock Text="Ukupno povećanja" Foreground="{StaticResource MutedBrush}"/><TextBlock x:Name="PriceIncreaseText" Text="0" FontSize="27" FontWeight="Bold" Foreground="#C7FFE7"/></StackPanel></Border>
                                 <Border Grid.Column="1" Style="{StaticResource CardBorder}" Background="#331A25" Margin="0,0,8,0" Padding="13"><StackPanel><TextBlock Text="Ukupno smanjenja" Foreground="{StaticResource MutedBrush}"/><TextBlock x:Name="PriceDecreaseText" Text="0" FontSize="27" FontWeight="Bold" Foreground="#FFC6CB"/></StackPanel></Border>
                                 <Border Grid.Column="2" Style="{StaticResource CardBorder}" Background="{StaticResource PurpleCardGradient}" Margin="0,0,8,0" Padding="13"><StackPanel><TextBlock Text="Prosječna promjena" Foreground="{StaticResource MutedBrush}"/><TextBlock x:Name="PriceAverageText" Text="0,0%" FontSize="27" FontWeight="Bold"/></StackPanel></Border>
                                 <Border Grid.Column="3" Style="{StaticResource CardBorder}" Background="{StaticResource BlueCardGradient}" Padding="13"><StackPanel><TextBlock Text="Zahvaćenih stavki" Foreground="{StaticResource MutedBrush}"/><TextBlock x:Name="PriceAffectedText" Text="0" FontSize="27" FontWeight="Bold"/></StackPanel></Border>
-                            </Grid>
+                            </UniformGrid>
                             <Grid Grid.Row="1"><Grid.ColumnDefinitions><ColumnDefinition Width="2.4*"/><ColumnDefinition Width="1*"/></Grid.ColumnDefinitions>
                                 <Border Grid.Column="0" Style="{StaticResource CardBorder}" Margin="0,0,9,0" Padding="14"><Grid><Grid.RowDefinitions><RowDefinition Height="38"/><RowDefinition Height="*"/></Grid.RowDefinitions><TextBlock Text="Trend promjena cijena" Style="{StaticResource SectionTitle}"/><Canvas x:Name="PriceChartCanvas" Grid.Row="1" Background="#081421" SizeChanged="PriceChartCanvas_SizeChanged" ClipToBounds="True"/></Grid></Border>
                                 <Border Grid.Column="1" Style="{StaticResource CardBorder}" Padding="12">
