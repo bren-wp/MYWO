@@ -76,8 +76,8 @@ public static class CsvImportService
                     item.AnchorPrice = anchor;
                     item.Notes = Get("opis_napomena");
                     item.IsActive = active;
-                    var savedId = AppDb.SaveService(item);
-                    item.Id = savedId;
+                    var serviceSavedId = AppDb.SaveService(item);
+                    item.Id = serviceSavedId;
                     if (existing is null)
                     {
                         result.Inserted++;
@@ -107,8 +107,8 @@ public static class CsvImportService
                 product.Availability = string.IsNullOrWhiteSpace(Get("dostupnost")) ? "Dostupno" : Get("dostupnost");
                 product.Description = Get("opis_napomena");
                 product.IsActive = active;
-                var savedId = AppDb.SaveProduct(product);
-                product.Id = savedId;
+                var productSavedId = AppDb.SaveProduct(product);
+                product.Id = productSavedId;
                 if (existingProduct is null)
                 {
                     result.Inserted++;
