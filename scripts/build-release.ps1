@@ -1,9 +1,12 @@
 param(
-    [string]$Version = "0.9.1"
+    [string]$Version = "0.9.2"
 )
 
 $ErrorActionPreference = "Stop"
 Set-StrictMode -Version Latest
+if ($PSVersionTable.PSVersion.Major -ge 7) {
+    $PSNativeCommandUseErrorActionPreference = $true
+}
 
 $root = Split-Path -Parent $PSScriptRoot
 $desktop = Join-Path $root "src\MYWO.Desktop\MYWO.Desktop.csproj"
