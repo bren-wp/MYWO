@@ -34,7 +34,7 @@ jobs:
 
       - name: Build release
         shell: pwsh
-        run: .\scripts\build-release.ps1 -Version 0.9.4
+        run: .\scripts\build-release.ps1 -Version 0.9.5
 
       - name: Portable runtime smoke test
         shell: pwsh
@@ -81,8 +81,13 @@ jobs:
           $sizes = @(
             @{ W = 880; H = 600 },
             @{ W = 1024; H = 768 },
+            @{ W = 1280; H = 720 },
             @{ W = 1366; H = 768 },
-            @{ W = 1600; H = 900 }
+            @{ W = 1440; H = 900 },
+            @{ W = 1600; H = 900 },
+            @{ W = 1920; H = 1080 },
+            @{ W = 2560; H = 1440 },
+            @{ W = 3840; H = 2160 }
           )
           foreach ($size in $sizes) {
             if (-not [MYWOWindowQa]::SetWindowPos($p.MainWindowHandle, [IntPtr]::Zero, 32, 32, $size.W, $size.H, 0x0004)) {
@@ -127,10 +132,10 @@ jobs:
             'MYWO-Setup.exe',
             'MYWO-Portable.exe',
             'MYWO-Update.exe',
-            'MYWO-Update-Payload-0.9.4.zip',
+            'MYWO-Update-Payload-0.9.5.zip',
             'update.json',
             'SHA256SUMS.txt',
-            'MYWO-0.9.4-source.zip'
+            'MYWO-0.9.5-source.zip'
           )
           foreach ($name in $required) {
             $path = Join-Path '.\dist' $name
@@ -144,21 +149,21 @@ jobs:
       - name: Upload Windows release artifact
         uses: actions/upload-artifact@v4
         with:
-          name: MYWO-0.9.4-Windows
+          name: MYWO-0.9.5-Windows
           path: dist/*
           if-no-files-found: error
           retention-days: 30
 
-      - name: Publish GitHub Release v0.9.4
+      - name: Publish GitHub Release v0.9.5
         if: github.ref == 'refs/heads/main'
         shell: pwsh
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           $ErrorActionPreference = 'Stop'
-          $tag = 'v0.9.4'
+          $tag = 'v0.9.5'
           $notes = @'
-          MYWO 0.9.4 Windows release.
+          MYWO 0.9.5 Windows release.
 
           Deliverables:
           - MYWO-Setup.exe
@@ -169,12 +174,16 @@ jobs:
           - automatic update payload and update.json
           - refreshed MYWO branding/icon assets
           - adaptive compact/narrow UI that prevents toolbar and action overlap
+          - two-row product/service filter reflow on compact windows
+          - ultra-narrow Dashboard, API and Archive detail-card stacking
+          - narrow Price Changes chart/schedule stacking and responsive settings option columns
+          - ultra-narrow Categories action fallback when the category tree is hidden
           - reflowed dashboard, publish, API and price KPI cards on narrow screens
           - vertical fallback scrolling for API, archive and price-history modules
           - Per-Monitor V2 DPI awareness and active-monitor work-area placement
           - persisted main-window placement with safe monitor restoration
           - ultra-narrow toolbar/sidebar fallback below the normal minimum
-          - runtime window-resize smoke test across four desktop sizes
+          - runtime window-resize smoke test across nine desktop sizes from 880×600 through 3840×2160
           - vertical stacking for Administration settings on narrow displays
           - short-window chrome compaction and compact navigation tooltips
           - virtualized DataGrids with explicit auto scrolling and keyboard focus polish
@@ -186,9 +195,9 @@ jobs:
 
           gh release view $tag *> $null
           if ($LASTEXITCODE -eq 0) {
-            gh release edit $tag --title 'MYWO 0.9.4' --notes $notes
+            gh release edit $tag --title 'MYWO 0.9.5' --notes $notes
           } else {
-            gh release create $tag --title 'MYWO 0.9.4' --notes $notes --latest
+            gh release create $tag --title 'MYWO 0.9.5' --notes $notes --latest
           }
 
           Get-ChildItem '.\dist' -File | ForEach-Object {
