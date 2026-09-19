@@ -1,6 +1,6 @@
 # MYWO responsive UI / UX
 
-MYWO v0.9.3 keeps the approved 1380×950 reference composition as the full desktop layout, while adapting safely to smaller and larger Windows work areas.
+MYWO v0.9.4 keeps the approved 1380×950 reference composition as the full desktop layout, while adapting safely to smaller and larger Windows work areas.
 
 ## Adaptive modes
 
@@ -47,7 +47,7 @@ At the narrow breakpoint Dashboard, Publication, API and Price Changes reflow KP
 
 ## Per-monitor DPI
 
-MYWO v0.9.3 declares **PerMonitorV2** awareness. Window fitting uses the work area of the actual monitor that owns the WPF window and converts native monitor coordinates to WPF device-independent pixels using that monitor's DPI scale.
+MYWO v0.9.4 declares **PerMonitorV2** awareness. Window fitting uses the work area of the actual monitor that owns the WPF window and converts native monitor coordinates to WPF device-independent pixels using that monitor's DPI scale.
 
 This matters for mixed-DPI systems such as a 150% laptop display combined with a 100% or 200% external monitor.
 
@@ -67,3 +67,14 @@ Below 1000 DIP width, the company-management card and system-settings card are n
 ## Data-heavy screens
 
 All DataGrid controls explicitly use row/column virtualization with recycling and automatic scrollbars. This reduces visual-tree pressure when catalogs contain hundreds or thousands of products/services.
+
+
+## Ultra-narrow fallback
+
+When the available Windows work area is below 760 DIP, MYWO switches to an ultra-narrow shell: a 58 DIP icon sidebar, collapsed company selector, tighter page margins, hidden shortcut badge/secondary subtitle, smaller editor drawers and a notification popup constrained to the visible width. The active company remains available through the Companies/Settings workflow.
+
+Main-window geometry is persisted in `window-state.json` under the normal MYWO data root and validated before restoration. DPI and display-setting changes trigger a new work-area fit and responsive reflow.
+
+## Runtime responsive QA
+
+Windows CI launches the real Portable EXE and resizes the live main window through 880×600, 1024×768, 1366×768 and 1600×900. The release fails if the main window cannot be acquired or the application exits after any resize.
