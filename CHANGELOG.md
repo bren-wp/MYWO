@@ -1,5 +1,17 @@
 # Changelog
 
+## 0.9.2
+
+- added vertical fallback scrolling to API, Archive and Price Changes so dense modules remain usable on short laptop displays
+- reflowed Dashboard KPI cards into two rows at the narrow breakpoint
+- reflowed Publication KPI cards and publication actions on narrow windows
+- reflowed API and Price Changes KPI rows into two-column compact layouts
+- preserved the full reference geometry at the normal desktop breakpoint
+- added consistent adaptive spacing between reflowed cards and actions
+- hardened the PowerShell release script so failed native dotnet commands abort the release immediately
+- added GitHub Actions concurrency so stale builds are cancelled when a newer main commit arrives
+- updated release validation, documentation and package versions to 0.9.2
+
 ## 0.9.1
 
 - added adaptive full / compact / narrow desktop layouts
