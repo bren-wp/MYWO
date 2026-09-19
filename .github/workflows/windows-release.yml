@@ -30,7 +30,7 @@ jobs:
 
       - name: Build release
         shell: pwsh
-        run: .\scripts\build-release.ps1 -Version 0.9.0
+        run: .\scripts\build-release.ps1 -Version 0.9.1
 
       - name: Portable runtime smoke test
         shell: pwsh
@@ -78,10 +78,10 @@ jobs:
             'MYWO-Setup.exe',
             'MYWO-Portable.exe',
             'MYWO-Update.exe',
-            'MYWO-Update-Payload-0.9.0.zip',
+            'MYWO-Update-Payload-0.9.1.zip',
             'update.json',
             'SHA256SUMS.txt',
-            'MYWO-0.9.0-source.zip'
+            'MYWO-0.9.1-source.zip'
           )
           foreach ($name in $required) {
             $path = Join-Path '.\dist' $name
@@ -95,21 +95,21 @@ jobs:
       - name: Upload Windows release artifact
         uses: actions/upload-artifact@v4
         with:
-          name: MYWO-0.9.0-Windows
+          name: MYWO-0.9.1-Windows
           path: dist/*
           if-no-files-found: error
           retention-days: 30
 
-      - name: Publish GitHub Release v0.9.0
+      - name: Publish GitHub Release v0.9.1
         if: github.ref == 'refs/heads/main'
         shell: pwsh
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           $ErrorActionPreference = 'Stop'
-          $tag = 'v0.9.0'
+          $tag = 'v0.9.1'
           $notes = @'
-          MYWO 0.9.0 Windows release.
+          MYWO 0.9.1 Windows release.
 
           Deliverables:
           - MYWO-Setup.exe
@@ -119,14 +119,18 @@ jobs:
           - no standalone uninstall.exe or unins*.exe
           - automatic update payload and update.json
           - refreshed MYWO branding/icon assets
+          - adaptive compact/narrow UI that prevents toolbar and action overlap
+          - work-area-aware resizable dialogs
+          - high-quality image scaling and lower-memory previews
+          - lean source archives without bin/obj build output
           - source archive and SHA-256 checksums
           '@
 
           gh release view $tag *> $null
           if ($LASTEXITCODE -eq 0) {
-            gh release edit $tag --title 'MYWO 0.9.0' --notes $notes
+            gh release edit $tag --title 'MYWO 0.9.1' --notes $notes
           } else {
-            gh release create $tag --title 'MYWO 0.9.0' --notes $notes --latest
+            gh release create $tag --title 'MYWO 0.9.1' --notes $notes --latest
           }
 
           Get-ChildItem '.\dist' -File | ForEach-Object {
