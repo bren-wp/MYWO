@@ -1,5 +1,22 @@
 # Changelog
 
+## 0.9.5
+
+- reworked Product filters into a two-row compact layout so search/status/availability/category/brand/advanced filters remain usable without overlap
+- removed the unused Service filter column and added a two-row compact Service filter layout
+- added ultra-narrow Dashboard stacking for chart/history and summary cards
+- added ultra-narrow API quick-action/endpoint stacking with explicit scrollable minimum content height
+- added ultra-narrow Archive detail/file/action stacking and safer compact search widths
+- added narrow Price Changes chart/scheduled-change stacking instead of compressing both panels side by side
+- added responsive Administration option columns: three on full, two on narrow and one on ultra-narrow
+- added ultra-narrow Categories action fallback while hiding the category tree to preserve editing access
+- tightened editor-drawer and notification-popup width clamping for unusually small Windows work areas
+- fixed panel spacing for incomplete final rows in responsive UniformGrid layouts
+- improved Product, Service and Price footer wrapping behavior by allowing action groups to consume remaining width correctly
+- expanded the real Windows runtime resize smoke test to nine resolutions from 880×600 through 3840×2160
+- expanded static validation to require the new adaptive module tokens and the full runtime resolution matrix
+- synchronized Desktop, Setup, Updater, documentation and release pipeline to 0.9.5
+
 ## 0.9.4
 
 - added persisted main-window size, position and maximized-state restoration with safe validation
