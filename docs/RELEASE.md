@@ -1,32 +1,33 @@
-# MYWO Windows release procedure – v0.9
+# MYWO Windows release procedure – v0.9.3
 
 ## Build requirements
 
 - Windows 10/11 or GitHub Actions `windows-latest`
 - .NET 10 SDK
-- PowerShell 7/Windows PowerShell
+- PowerShell 7 / Windows PowerShell
 
 No Inno Setup, NSIS or external installer compiler is required.
 
 ## Build
 
 ```powershell
-.\scripts\build-release.ps1 -Version 0.9.2
+.\scripts\build-release.ps1 -Version 0.9.3
 ```
 
-The script must produce in `dist/`:
+The script produces in `dist/`:
 
 - `MYWO-Setup.exe`
 - `MYWO-Portable.exe`
 - `MYWO-Update.exe`
-- `MYWO-Update-Payload-0.9.2.zip`
-- `MYWO-Installed-Files-0.9.2.zip`
+- `MYWO-Update-Payload-0.9.3.zip`
+- `MYWO-Installed-Files-0.9.3.zip`
+- `MYWO-0.9.3-source.zip`
 - `update.json`
 - `SHA256SUMS.txt`
 
 ## Installation model
 
-`MYWO-Setup.exe` installs per-user into `%LOCALAPPDATA%\Programs\MYWO`. It creates Start Menu and Desktop shortcuts and writes the Windows Installed Apps entry under HKCU.
+`MYWO-Setup.exe` installs per-user into `%LOCALAPPDATA%\Programs\MYWO`. It creates Start Menu/Desktop shortcuts and writes the Windows Installed Apps entry under HKCU.
 
 The uninstall command is:
 
@@ -34,7 +35,7 @@ The uninstall command is:
 MYWO-Update.exe --uninstall
 ```
 
-There is intentionally no `uninstall.exe`, `unins000.exe` or other dedicated uninstaller. The updater copies itself to a temporary location before update/uninstall so it can safely replace or remove the installed application directory.
+There is intentionally no `uninstall.exe`, `unins000.exe` or other dedicated uninstaller. The updater copies itself to a temporary directory before update/uninstall so it can safely replace or remove the installed application tree.
 
 ## Portable model
 
@@ -42,13 +43,46 @@ There is intentionally no `uninstall.exe`, `unins000.exe` or other dedicated uni
 
 ## Update model
 
-`MYWO-Update.exe` reads `https://mywo.hr/download/update.json` by default. The manifest contains `version`, `url` and `sha256`. The update package is downloaded to a temporary staging directory and its SHA-256 is verified before any installed file is replaced.
+`MYWO-Update.exe` uses the latest GitHub Release manifest by default:
 
-## Required validation
+```text
+https://github.com/bren-wp/MYWO/releases/latest/download/update.json
+```
 
-Test on a clean Windows 11 x64 VM/user profile: setup, first launch, shortcuts, Installed Apps entry, update, uninstall with preserved data, uninstall with removed data, portable mode, database migration, XML/CSV publishing, API startup, CSV round-trip, backup/restore and 100/125/150/200% display scaling.
+The manifest contains `version`, `url` and `sha256`. The update package must use HTTPS, is downloaded into temporary staging, is bounded by the configured package-size limit and must pass SHA-256 verification before any installed file is replaced.
 
+## DPI / display contract
 
-## Responsive UI QA
+The WPF desktop project includes an application manifest with `PerMonitorV2` DPI awareness. Window fitting uses the actual monitor work area rather than assuming the primary display. Test mixed-DPI monitor movement and launch behavior at 100/125/150/175/200% scaling.
 
-Before publishing, test the screen-size matrix in `RESPONSIVE-UI.md` in addition to the automated Windows smoke tests.
+## Required automated validation
+
+The GitHub Actions Windows release pipeline must pass:
+
+1. static XAML/XML and responsive-token validation;
+2. .NET restore/build;
+3. self-contained publish;
+4. Portable runtime smoke test and portable database creation;
+5. Setup installation smoke test;
+6. Installed Apps/uninstall-command validation;
+7. integrated `MYWO-Update.exe --uninstall --quiet` smoke test;
+8. release artifact existence/non-empty validation;
+9. GitHub Release upload.
+
+## Required visual QA
+
+Automated CI cannot prove visual pixel parity. Before calling a build visually final, inspect at minimum:
+
+- 880×600
+- 1024×768
+- 1366×768
+- 1920×1080
+- 2560×1440
+- 3840×2160 with 150–200% scale
+- mixed-DPI multi-monitor launch/move scenarios
+
+Use the matrix in `RESPONSIVE-UI.md` and compare the full desktop breakpoint against the approved reference screenshots.
+
+## Release signing
+
+Current CI can produce deterministic/tested binaries without a code-signing certificate. For commercial distribution, Authenticode signing should be added when a valid Windows code-signing certificate and secure signing channel are available; do not embed private signing keys in the repository.
