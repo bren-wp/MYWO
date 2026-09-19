@@ -44,7 +44,7 @@ public partial class App : Application
         if (double.IsNaN(window.Height) || window.Height <= 0 || window.Height > maxHeight) window.Height = maxHeight;
 
         // Dialogs stay inside the current work area; the main shell may still maximize normally.
-        if (window is not MainWindow)
+        if (window is not MYWO.Desktop.MainWindow)
         {
             window.MaxWidth = Math.Min(window.MaxWidth, maxWidth);
             window.MaxHeight = Math.Min(window.MaxHeight, maxHeight);
