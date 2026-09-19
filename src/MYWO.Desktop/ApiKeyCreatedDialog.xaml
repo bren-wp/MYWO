@@ -1,7 +1,7 @@
 <Window x:Class="MYWO.Desktop.ApiKeyCreatedDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Width="570" Height="390" WindowStartupLocation="CenterOwner" ResizeMode="NoResize" WindowStyle="None">
+        Width="570" Height="390" WindowStartupLocation="CenterOwner" ResizeMode="CanResizeWithGrip" WindowStyle="None">
     <Border Background="{StaticResource SurfaceBrush}" BorderBrush="#2B4968" BorderThickness="1" CornerRadius="12">
         <Grid Margin="22"><Grid.RowDefinitions><RowDefinition Height="58"/><RowDefinition Height="*"/><RowDefinition Height="58"/></Grid.RowDefinitions>
             <Grid MouseLeftButtonDown="DialogHeader_MouseLeftButtonDown"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="42"/></Grid.ColumnDefinitions><TextBlock Text="Generiraj novi API ključ" FontSize="22" FontWeight="SemiBold" VerticalAlignment="Center"/><Button Grid.Column="1" Style="{StaticResource GhostButton}" Content="✕" IsCancel="True"/></Grid>
