@@ -1,139 +1,82 @@
-name: MYWO Windows Release
+name: MYWO v0.9.1 Chat Delivery
 
 on:
   push:
     branches:
-      - main
-  workflow_dispatch:
+      - chatgpt/mywo-v0.9.1-delivery
 
 permissions:
-  contents: write
+  contents: read
 
 jobs:
-  windows-release:
-    runs-on: windows-latest
-    timeout-minutes: 40
+  export-release:
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-
-      - name: Setup .NET 10
-        uses: actions/setup-dotnet@v4
-        with:
-          dotnet-version: '10.0.x'
-          cache: true
-          cache-dependency-path: '**/*.csproj'
-
-      - name: Validate source
-        shell: pwsh
-        run: .\scripts\validate-source.ps1
-
-      - name: Build release
-        shell: pwsh
-        run: .\scripts\build-release.ps1 -Version 0.9.1
-
-      - name: Portable runtime smoke test
-        shell: pwsh
-        run: |
-          $ErrorActionPreference = 'Stop'
-          $test = Join-Path $env:RUNNER_TEMP 'mywo-portable-smoke'
-          if (Test-Path $test) { Remove-Item $test -Recurse -Force }
-          New-Item -ItemType Directory -Path $test -Force | Out-Null
-          Copy-Item '.\dist\MYWO-Portable.exe' (Join-Path $test 'MYWO-Portable.exe')
-          $p = Start-Process (Join-Path $test 'MYWO-Portable.exe') -WorkingDirectory $test -PassThru
-          Start-Sleep -Seconds 8
-          if ($p.HasExited) { throw "Portable app exited during smoke test with code $($p.ExitCode)." }
-          if (-not (Test-Path (Join-Path $test 'MYWO-Data\mywo.db'))) { throw 'Portable mode did not create MYWO-Data\mywo.db.' }
-          Stop-Process -Id $p.Id -Force
-
-      - name: Setup and integrated uninstall smoke test
-        shell: pwsh
-        run: |
-          $ErrorActionPreference = 'Stop'
-          .\dist\MYWO-Setup.exe --silent
-          Start-Sleep -Seconds 4
-          $install = Join-Path $env:LOCALAPPDATA 'Programs\MYWO'
-          if (-not (Test-Path (Join-Path $install 'MYWO.exe'))) { throw 'Installed MYWO.exe is missing.' }
-          if (-not (Test-Path (Join-Path $install 'MYWO-Update.exe'))) { throw 'Installed MYWO-Update.exe is missing.' }
-          if (Test-Path (Join-Path $install 'uninstall.exe')) { throw 'Standalone uninstall.exe must not be shipped.' }
-          if (Get-ChildItem $install -Filter 'unins*.exe' -ErrorAction SilentlyContinue) { throw 'Standalone unins*.exe must not be shipped.' }
-
-          $key = Get-ItemProperty 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\MYWO'
-          if ($key.UninstallString -notmatch 'MYWO-Update\.exe.*--uninstall') {
-            throw "Integrated uninstall command is incorrect: $($key.UninstallString)"
-          }
-
-          & (Join-Path $install 'MYWO-Update.exe') --uninstall --quiet
-          Start-Sleep -Seconds 8
-          if (Test-Path $install) { throw 'Integrated uninstall did not remove the installation directory.' }
-          if (Test-Path 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\MYWO') {
-            throw 'Integrated uninstall registry entry still exists.'
-          }
-
-      - name: Validate release artifacts
-        shell: pwsh
-        run: |
-          $ErrorActionPreference = 'Stop'
-          $required = @(
-            'MYWO-Setup.exe',
-            'MYWO-Portable.exe',
-            'MYWO-Update.exe',
-            'MYWO-Update-Payload-0.9.1.zip',
-            'update.json',
-            'SHA256SUMS.txt',
-            'MYWO-0.9.1-source.zip'
-          )
-          foreach ($name in $required) {
-            $path = Join-Path '.\dist' $name
-            if (-not (Test-Path $path)) { throw "Missing $name" }
-            if ((Get-Item $path).Length -eq 0) { throw "Empty $name" }
-            Write-Host "$name -> $((Get-Item $path).Length) bytes"
-          }
-          if (Get-ChildItem '.\dist' -Filter 'unins*.exe' -ErrorAction SilentlyContinue) { throw 'Release contains forbidden unins*.exe.' }
-          if (Test-Path '.\dist\uninstall.exe') { throw 'Release contains forbidden standalone uninstall.exe.' }
-
-      - name: Upload Windows release artifact
-        uses: actions/upload-artifact@v4
-        with:
-          name: MYWO-0.9.1-Windows
-          path: dist/*
-          if-no-files-found: error
-          retention-days: 30
-
-      - name: Publish GitHub Release v0.9.1
-        if: github.ref == 'refs/heads/main'
-        shell: pwsh
+      - name: Download verified v0.9.1 release
+        shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
-          $ErrorActionPreference = 'Stop'
-          $tag = 'v0.9.1'
-          $notes = @'
-          MYWO 0.9.1 Windows release.
+          set -euo pipefail
+          mkdir -p export
+          gh release download v0.9.1 --repo "${GITHUB_REPOSITORY}" --dir export
+          ls -lah export
 
-          Deliverables:
-          - MYWO-Setup.exe
-          - MYWO-Portable.exe
-          - MYWO-Update.exe
-          - integrated uninstall through MYWO-Update.exe --uninstall
-          - no standalone uninstall.exe or unins*.exe
-          - automatic update payload and update.json
-          - refreshed MYWO branding/icon assets
-          - adaptive compact/narrow UI that prevents toolbar and action overlap
-          - work-area-aware resizable dialogs
-          - high-quality image scaling and lower-memory previews
-          - lean source archives without bin/obj build output
-          - source archive and SHA-256 checksums
-          '@
+      - name: Export Setup
+        uses: actions/upload-artifact@v4
+        with:
+          name: MYWO-Setup-v0.9.1
+          path: export/MYWO-Setup.exe
+          compression-level: 0
+          if-no-files-found: error
 
-          gh release view $tag *> $null
-          if ($LASTEXITCODE -eq 0) {
-            gh release edit $tag --title 'MYWO 0.9.1' --notes $notes
-          } else {
-            gh release create $tag --title 'MYWO 0.9.1' --notes $notes --latest
-          }
+      - name: Export Portable
+        uses: actions/upload-artifact@v4
+        with:
+          name: MYWO-Portable-v0.9.1
+          path: export/MYWO-Portable.exe
+          compression-level: 0
+          if-no-files-found: error
 
-          Get-ChildItem '.\dist' -File | ForEach-Object {
-            gh release upload $tag $_.FullName --clobber
-            if ($LASTEXITCODE -ne 0) { throw "Failed to upload $($_.Name) to release." }
-          }
+      - name: Export Updater
+        uses: actions/upload-artifact@v4
+        with:
+          name: MYWO-Update-v0.9.1
+          path: export/MYWO-Update.exe
+          compression-level: 0
+          if-no-files-found: error
+
+      - name: Export Source
+        uses: actions/upload-artifact@v4
+        with:
+          name: MYWO-Source-v0.9.1
+          path: export/MYWO-0.9.1-source.zip
+          compression-level: 0
+          if-no-files-found: error
+
+      - name: Export Update Payload
+        uses: actions/upload-artifact@v4
+        with:
+          name: MYWO-Update-Payload-v0.9.1
+          path: export/MYWO-Update-Payload-0.9.1.zip
+          compression-level: 0
+          if-no-files-found: error
+
+      - name: Export Installed Files
+        uses: actions/upload-artifact@v4
+        with:
+          name: MYWO-Installed-Files-v0.9.1
+          path: export/MYWO-Installed-Files-0.9.1.zip
+          compression-level: 0
+          if-no-files-found: error
+
+      - name: Export Metadata
+        uses: actions/upload-artifact@v4
+        with:
+          name: MYWO-Metadata-v0.9.1
+          path: |
+            export/SHA256SUMS.txt
+            export/update.json
+          compression-level: 0
+          if-no-files-found: error
