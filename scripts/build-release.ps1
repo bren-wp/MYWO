@@ -44,13 +44,13 @@ Write-Host "[2/9] Building solution..."
 dotnet build $root\MYWO.sln -c Release --no-restore -p:Version=$Version -p:FileVersion=$Version.0 -p:AssemblyVersion=$Version.0
 
 Write-Host "[3/9] Publishing MYWO-Update.exe..."
-dotnet publish $updater @common --no-restore -p:AssemblyName=MYWO-Update -o $updaterStage
+dotnet publish $updater @common -p:AssemblyName=MYWO-Update -o $updaterStage
 $updaterExe = Join-Path $updaterStage "MYWO-Update.exe"
 if (-not (Test-Path $updaterExe)) { throw "MYWO-Update.exe was not produced." }
 Copy-Item $updaterExe (Join-Path $dist "MYWO-Update.exe") -Force
 
 Write-Host "[4/9] Publishing installed MYWO.exe payload..."
-dotnet publish $desktop @common --no-restore -p:AssemblyName=MYWO -o $appStage
+dotnet publish $desktop @common -p:AssemblyName=MYWO -o $appStage
 $appExe = Join-Path $appStage "MYWO.exe"
 if (-not (Test-Path $appExe)) { throw "MYWO.exe was not produced." }
 Copy-Item $updaterExe (Join-Path $appStage "MYWO-Update.exe") -Force
@@ -69,13 +69,13 @@ Set-Content -Path (Join-Path $dist "update.json") -Value $manifest -Encoding UTF
 
 Write-Host "[5/9] Building embedded MYWO-Setup.exe..."
 Copy-Item $payload $setupPayload -Force
-dotnet publish $setup @common --no-restore -p:AssemblyName=MYWO-Setup -o $setupStage
+dotnet publish $setup @common -p:AssemblyName=MYWO-Setup -o $setupStage
 $setupExe = Join-Path $setupStage "MYWO-Setup.exe"
 if (-not (Test-Path $setupExe)) { throw "MYWO-Setup.exe was not produced." }
 Copy-Item $setupExe (Join-Path $dist "MYWO-Setup.exe") -Force
 
 Write-Host "[6/9] Publishing one-file portable build..."
-dotnet publish $desktop @common --no-restore -p:AssemblyName=MYWO-Portable -o $portableStage
+dotnet publish $desktop @common -p:AssemblyName=MYWO-Portable -o $portableStage
 $portableExe = Join-Path $portableStage "MYWO-Portable.exe"
 if (-not (Test-Path $portableExe)) { throw "MYWO-Portable.exe was not produced." }
 Copy-Item $portableExe (Join-Path $dist "MYWO-Portable.exe") -Force
