@@ -1,4 +1,4 @@
-name: MYWO v0.7 Final Windows Build
+name: MYWO v0.7 Final Windows Build\n# final payload revision 2
 
 on:
   push:
