@@ -1,36 +1,55 @@
-# Validation – MYWO v0.5.0
+# Validation – MYWO v0.9.3
 
-## Provjere izvršene u ovom razvojnom okruženju
+## Static source validation
 
-- svi WPF `.xaml` dokumenti prolaze XML parser: PASS
-- svi event handleri navedeni u XAML-u postoje u pripadajućem code-behindu: PASS
-- nema dupliciranih `x:Name` vrijednosti unutar XAML dokumenata: PASS
-- svi `AppDb.*` pozivi iz ostatka projekta imaju odgovarajuću javnu metodu: PASS
-- nova SQLite v0.5 shema izvršava se u SQLite engineu: PASS
-- simulirana migracija sheme v0.4 → v0.5 zadržava postojeću povijest cijena i dodaje `price_schedules` te nova metadata polja: PASS
-- provjereni novi stupci: category hierarchy/description, brand description, product description/image, service notes, API permissions, scheduled publish i notification settings: PASS
-- provjerene nove tablice `api_request_log` i `notifications`: PASS
-- projekt, release skripta i installer usklađeni na verziju `0.5.0`: PASS
-- XML/CSV/API preview gumbi imaju stvarne event handlere: PASS
-- publish-screen gumb `Spremi` sada sprema upravo publish kontrole, a ne zasebne settings kontrole: PASS
+The release validator checks:
 
-## Ograničenje okruženja
+- every WPF `.xaml` file parses as XML;
+- reference desktop geometry tokens remain present;
+- responsive shell tokens exist for compact/short layouts;
+- Product and Service drawers retain their reference widths;
+- MYWO branding assets exist and are non-trivial files;
+- Desktop, Setup and Updater project versions match the release version;
+- `app.manifest` exists and declares `PerMonitorV2` plus long-path awareness;
+- integrated setup/update/uninstall contract tokens remain present;
+- production C#/XAML source does not contain TODO/FIXME/placeholder markers.
 
-U ovom Linux razvojnom okruženju nije instaliran Windows .NET SDK/MSBuild/WPF toolchain. Zbog toga ovdje nije izvršen pravi Windows `dotnet build`, `dotnet publish` niti runtime screenshot test. To nije označeno kao PASS.
+## Windows CI validation
 
-Završna obavezna provjera na Windows računalu:
+A release is not accepted merely because the source looks correct. The Windows pipeline must complete all of these stages:
 
-```powershell
-.\scripts\build-release.ps1 -Version 0.5.0
-```
+- source validation;
+- solution build on `windows-latest` with .NET 10;
+- self-contained x64 release generation;
+- Portable launch smoke test;
+- creation of `MYWO-Data\mywo.db` in portable mode;
+- silent Setup install;
+- installed `MYWO.exe` and `MYWO-Update.exe` existence checks;
+- verification that no standalone `uninstall.exe` or `unins*.exe` is shipped;
+- verification that Installed Apps points uninstall to `MYWO-Update.exe --uninstall`;
+- quiet integrated uninstall and registry/install-directory cleanup;
+- required release artifact and non-empty-file checks;
+- GitHub Release publication.
 
-Nakon builda testirati najmanje: clean install, upgrade postojeće v0.1/v0.2/v0.3/v0.4 baze, CRUD svih entiteta, izbor/uklanjanje slike proizvoda, CSV round-trip, XML/CSV/API preview, ručnu i automatsku objavu, restore arhivske verzije, SHA-256, scoped API ključeve, Bearer i X-API-Key autentifikaciju, request statistiku, notification centar, backup/restore, port conflict te DPI 100/125/150/200%.
+## v0.9.3 responsive checks
 
-## v0.5 dodatne provjere
+The source contract now additionally covers:
 
-- XAML parsiranje uključuje novi `BulkPriceDialog` i nadograđeni Price Changes ekran.
-- Provjeriti migraciju v4 → v5 i očuvanje postojećih zapisa.
-- Provjeriti bulk +5%, bulk fiksnu korekciju i exact-set na više proizvoda/usluga.
-- Provjeriti pending → applied tijek planirane cijene.
-- Provjeriti otkazivanje pending rasporeda.
-- Provjeriti da Undo odbija povrat ako je stavka nakon odabrane promjene ponovno uređena.
+- Per-Monitor V2 DPI manifest;
+- active-monitor work-area sizing/placement;
+- compact navigation tooltips;
+- short-window shell chrome;
+- adaptive Categories split width;
+- stacked Administration settings below the narrow breakpoint;
+- resize-safe dialog minimum sizes and scroll fallback;
+- DataGrid row/column virtualization and auto scrollbars.
+
+## What automated CI does not prove
+
+CI compile/runtime smoke tests do **not** establish measured pixel-for-pixel equivalence with a screenshot. Visual QA is still required on representative resolutions and DPI scales, especially mixed-DPI multi-monitor setups.
+
+The approved reference screenshots remain the visual authority for the full desktop breakpoint. Responsive breakpoints intentionally reflow controls where keeping the reference geometry would create clipping or overlap.
+
+## Data/regulatory note
+
+The current XML/CSV representation is a MYWO application format. Validation of the application does not mean that the file format is an officially certified Croatian regulatory schema. Any such claim requires a separate mapping against current authoritative requirements.
