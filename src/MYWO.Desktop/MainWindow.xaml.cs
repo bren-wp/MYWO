@@ -37,7 +37,7 @@ public partial class MainWindow : Window
         InitializeComponent();
         SourceInitialized += (_, _) => ApplyWindows11Chrome();
         DatabasePathText.Text = $"Baza: {AppDb.DatabasePath}";
-        var appVersion = typeof(MainWindow).Assembly.GetName().Version?.ToString(3) ?? "0.9.2";
+        var appVersion = typeof(MainWindow).Assembly.GetName().Version?.ToString(3) ?? "0.9.3";
         ReleaseModeText.Text = $"MYWO v{appVersion} • {(AppPaths.IsPortable ? "Portable" : "Instalirana verzija")}";
         SidebarVersionText.Text = $"MYWO v{appVersion}";
         _scheduleTimer.Tick += ScheduleTimer_Tick;
@@ -56,11 +56,16 @@ public partial class MainWindow : Window
 
         var compact = width < 1180;
         var narrow = width < 1000;
+        var shortWindow = ActualHeight > 0 && ActualHeight < 760;
+
+        SidebarLogoRow.Height = new GridLength(shortWindow ? 66 : 82);
+        MainToolbarRow.Height = new GridLength(shortWindow ? 60 : 68);
+        PageHeaderRow.Height = new GridLength(shortWindow ? 54 : 64);
 
         SidebarColumn.Width = new GridLength(compact ? (narrow ? 68 : 76) : 214);
         SidebarBrandText.Visibility = compact ? Visibility.Collapsed : Visibility.Visible;
-        SidebarPromoCard.Visibility = compact ? Visibility.Collapsed : Visibility.Visible;
-        SidebarFooterRow.Height = new GridLength(compact ? 38 : 116);
+        SidebarPromoCard.Visibility = compact || shortWindow ? Visibility.Collapsed : Visibility.Visible;
+        SidebarFooterRow.Height = new GridLength(compact || shortWindow ? 38 : 116);
         SidebarVersionText.HorizontalAlignment = compact ? HorizontalAlignment.Center : HorizontalAlignment.Left;
         SidebarVersionText.Margin = compact ? new Thickness(0, 6, 0, 0) : new Thickness(5, 8, 0, 0);
 
@@ -70,7 +75,11 @@ public partial class MainWindow : Window
             if (nav.Content is DockPanel dock)
             {
                 var labels = dock.Children.OfType<TextBlock>().ToArray();
-                if (labels.Length > 1) labels[1].Visibility = compact ? Visibility.Collapsed : Visibility.Visible;
+                if (labels.Length > 1)
+                {
+                    labels[1].Visibility = compact ? Visibility.Collapsed : Visibility.Visible;
+                    nav.ToolTip = compact ? labels[1].Text : null;
+                }
             }
         }
 
@@ -107,6 +116,9 @@ public partial class MainWindow : Window
 
         ProductDrawer.Width = narrow ? 350 : compact ? 390 : 422;
         ServiceDrawer.Width = narrow ? 350 : compact ? 390 : 420;
+
+        CategoriesTreeColumn.Width = new GridLength(narrow ? 280 : compact ? 320 : 355);
+        CategoriesDetailColumn.Width = new GridLength(1, GridUnitType.Star);
 
         SettingsCompaniesColumn.Width = new GridLength(compact ? 0.72 : 0.82, GridUnitType.Star);
         SettingsCompaniesColumn.MinWidth = narrow ? 220 : 240;
