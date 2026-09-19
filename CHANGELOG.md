@@ -1,5 +1,18 @@
 # Changelog
 
+## 0.9.4
+
+- added persisted main-window size, position and maximized-state restoration with safe validation
+- added automatic reflow after DPI changes and Windows display-configuration changes
+- added ultra-narrow fallback below 760 DIP for unusually small work areas
+- collapses the company selector only in ultra-narrow mode while preserving active-company context elsewhere
+- hides the Ctrl+K shortcut badge and secondary page subtitle when space is critically constrained
+- dynamically shrinks editor drawers and notification popup to remain inside very narrow windows
+- added two-column KPI reflow for ultra-narrow dashboard/publication views
+- added a real Windows runtime responsive smoke test that resizes the running Portable app through 880×600, 1024×768, 1366×768 and 1600×900
+- expanded static validation to require adaptive runtime, window-state and compact-toolbar tokens
+- synchronized Desktop, Setup, Updater, documentation and release pipeline to 0.9.4
+
 ## 0.9.3
 
 - added explicit Windows Per-Monitor V2 DPI awareness and long-path manifest support
