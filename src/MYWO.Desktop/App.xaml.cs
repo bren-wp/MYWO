@@ -39,11 +39,16 @@ public partial class App : Application
 
         if (window.MinWidth > maxWidth) window.MinWidth = Math.Max(480, maxWidth);
         if (window.MinHeight > maxHeight) window.MinHeight = Math.Max(360, maxHeight);
-        window.MaxWidth = Math.Min(window.MaxWidth, maxWidth);
-        window.MaxHeight = Math.Min(window.MaxHeight, maxHeight);
 
         if (double.IsNaN(window.Width) || window.Width <= 0 || window.Width > maxWidth) window.Width = maxWidth;
         if (double.IsNaN(window.Height) || window.Height <= 0 || window.Height > maxHeight) window.Height = maxHeight;
+
+        // Dialogs stay inside the current work area; the main shell may still maximize normally.
+        if (window is not MainWindow)
+        {
+            window.MaxWidth = Math.Min(window.MaxWidth, maxWidth);
+            window.MaxHeight = Math.Min(window.MaxHeight, maxHeight);
+        }
     }
 
     protected override void OnExit(ExitEventArgs e)
