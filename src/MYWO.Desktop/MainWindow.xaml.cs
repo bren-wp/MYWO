@@ -120,9 +120,45 @@ public partial class MainWindow : Window
         CategoriesTreeColumn.Width = new GridLength(narrow ? 280 : compact ? 320 : 355);
         CategoriesDetailColumn.Width = new GridLength(1, GridUnitType.Star);
 
-        SettingsCompaniesColumn.Width = new GridLength(compact ? 0.72 : 0.82, GridUnitType.Star);
-        SettingsCompaniesColumn.MinWidth = narrow ? 220 : 240;
-        SettingsSystemColumn.MinWidth = narrow ? 390 : 430;
+        if (narrow)
+        {
+            SettingsCompaniesColumn.MinWidth = 0;
+            SettingsSystemColumn.MinWidth = 0;
+            SettingsCompaniesColumn.Width = new GridLength(1, GridUnitType.Star);
+            SettingsSystemColumn.Width = new GridLength(0);
+            SettingsPrimaryRow.Height = new GridLength(430);
+            SettingsSecondaryRow.Height = new GridLength(500);
+
+            Grid.SetRow(SettingsCompaniesCard, 0);
+            Grid.SetColumn(SettingsCompaniesCard, 0);
+            Grid.SetColumnSpan(SettingsCompaniesCard, 2);
+            SettingsCompaniesCard.Margin = new Thickness(0, 0, 0, 10);
+
+            Grid.SetRow(SettingsSystemCard, 1);
+            Grid.SetColumn(SettingsSystemCard, 0);
+            Grid.SetColumnSpan(SettingsSystemCard, 2);
+            SettingsSystemCard.Margin = new Thickness(0);
+        }
+        else
+        {
+            SettingsCompaniesColumn.MinWidth = 240;
+            SettingsSystemColumn.MinWidth = 430;
+            SettingsCompaniesColumn.Width = new GridLength(compact ? 0.72 : 0.82, GridUnitType.Star);
+            SettingsSystemColumn.Width = new GridLength(1.65, GridUnitType.Star);
+            SettingsPrimaryRow.Height = new GridLength(1, GridUnitType.Star);
+            SettingsSecondaryRow.Height = new GridLength(0);
+
+            Grid.SetRow(SettingsCompaniesCard, 0);
+            Grid.SetColumn(SettingsCompaniesCard, 0);
+            Grid.SetColumnSpan(SettingsCompaniesCard, 1);
+            SettingsCompaniesCard.Margin = new Thickness(0, 0, 10, 0);
+
+            Grid.SetRow(SettingsSystemCard, 0);
+            Grid.SetColumn(SettingsSystemCard, 1);
+            Grid.SetColumnSpan(SettingsSystemCard, 1);
+            SettingsSystemCard.Margin = new Thickness(0);
+        }
+
         NotificationPopup.HorizontalOffset = narrow ? -260 : -310;
     }
 
