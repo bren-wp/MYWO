@@ -503,9 +503,9 @@
                                     <Button Grid.Column="1" Style="{StaticResource GhostButton}" Content="Brendovi" Margin="2" Tag="brands" Click="Nav_Click"/>
                                 </Grid>
                             </Border>
-                            <Grid Grid.Row="1" Margin="0,10,0,0">
+                            <Grid x:Name="CategoriesLayoutGrid" Grid.Row="1" Margin="0,10,0,0">
                                 <Grid.ColumnDefinitions><ColumnDefinition x:Name="CategoriesTreeColumn" Width="355"/><ColumnDefinition x:Name="CategoriesDetailColumn" Width="*"/></Grid.ColumnDefinitions>
-                                <Border Grid.Column="0" Style="{StaticResource CardBorder}" Margin="0,0,10,0" Padding="12">
+                                <Border x:Name="CategoriesTreeCard" Grid.Column="0" Style="{StaticResource CardBorder}" Margin="0,0,10,0" Padding="12">
                                     <Grid><Grid.RowDefinitions><RowDefinition Height="48"/><RowDefinition Height="43"/><RowDefinition Height="*"/><RowDefinition Height="46"/></Grid.RowDefinitions>
                                         <DockPanel><TextBlock Text="Kategorije" Style="{StaticResource SectionTitle}" VerticalAlignment="Center"/><Button DockPanel.Dock="Right" Style="{StaticResource PrimaryButton}" Content="＋  Nova kategorija" Click="AddCategory_Click"/></DockPanel>
                                         <Border Grid.Row="1" Background="#0B1B2E" BorderBrush="#23415F" BorderThickness="1" CornerRadius="8" Padding="12,0" Margin="0,0,0,8">
@@ -527,11 +527,19 @@
                                         <StackPanel Grid.Row="3" Orientation="Horizontal" HorizontalAlignment="Right"><Button Style="{StaticResource SecondaryButton}" Content="Uredi" Click="EditCategory_Click"/><Button Style="{StaticResource DangerButton}" Content="Obriši" Click="DeleteCategory_Click"/></StackPanel>
                                     </Grid>
                                 </Border>
-                                <Grid Grid.Column="1">
+                                <Grid x:Name="CategoriesDetailGrid" Grid.Column="1">
                                     <Grid.RowDefinitions><RowDefinition Height="1.08*"/><RowDefinition Height="0.92*"/></Grid.RowDefinitions>
                                     <Border Grid.Row="0" Style="{StaticResource CardBorder}" Padding="0" Margin="0,0,0,9">
                                         <Grid><Grid.RowDefinitions><RowDefinition Height="48"/><RowDefinition Height="*"/></Grid.RowDefinitions>
-                                            <DockPanel Margin="14,0"><TextBlock Text="Kategorije" Style="{StaticResource SectionTitle}" VerticalAlignment="Center"/><TextBlock DockPanel.Dock="Right" Text="Pregled strukture i statusa" Foreground="{StaticResource MutedBrush}" FontSize="10" VerticalAlignment="Center"/></DockPanel>
+                                            <DockPanel Margin="14,0" LastChildFill="False">
+                                                <TextBlock Text="Kategorije" Style="{StaticResource SectionTitle}" VerticalAlignment="Center"/>
+                                                <TextBlock x:Name="CategoriesDetailHint" DockPanel.Dock="Right" Text="Pregled strukture i statusa" Foreground="{StaticResource MutedBrush}" FontSize="10" VerticalAlignment="Center"/>
+                                                <WrapPanel x:Name="CategoriesUltraActions" DockPanel.Dock="Right" Visibility="Collapsed" Orientation="Horizontal">
+                                                    <Button Style="{StaticResource GhostButton}" Content="＋ Nova" Click="AddCategory_Click" ToolTip="Dodaj novu kategoriju"/>
+                                                    <Button Style="{StaticResource GhostButton}" Content="Uredi" Click="EditCategory_Click" ToolTip="Uredi odabranu kategoriju"/>
+                                                    <Button Style="{StaticResource GhostButton}" Content="Obriši" Click="DeleteCategory_Click" ToolTip="Obriši odabranu kategoriju"/>
+                                                </WrapPanel>
+                                            </DockPanel>
                                             <DataGrid Grid.Row="1" x:Name="CategoriesGrid" IsReadOnly="True" SelectionMode="Single" BorderThickness="0" RowHeight="42">
                                                 <DataGrid.Columns><DataGridTextColumn Header="Naziv" Binding="{Binding Name}" Width="1.7*"/><DataGridTextColumn Header="Nadređena" Binding="{Binding ParentName}" Width="1.2*"/><DataGridTextColumn Header="Vrsta" Binding="{Binding Kind}" Width="*"/><DataGridTemplateColumn Header="Status" Width="92"><DataGridTemplateColumn.CellTemplate><DataTemplate><Border Style="{StaticResource StatusPillBorder}" HorizontalAlignment="Left"><TextBlock Style="{StaticResource StatusPillText}"/></Border></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn></DataGrid.Columns>
                                             </DataGrid>
@@ -613,7 +621,7 @@
                         <!-- API -->
                         <ScrollViewer x:Name="ApiPanel" Visibility="Collapsed" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
                             <Grid x:Name="ApiLayoutGrid" MinHeight="620">
-                            <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="355"/><RowDefinition Height="*"/></Grid.RowDefinitions>
+                            <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition x:Name="ApiKeysRow" Height="355"/><RowDefinition x:Name="ApiBottomRow" Height="*"/></Grid.RowDefinitions>
                             <UniformGrid x:Name="ApiKpiGrid" Grid.Row="0" Columns="4" Height="100" Margin="0,0,0,9">
                                 <Border Grid.Column="0" Style="{StaticResource CardBorder}" Background="{StaticResource GreenCardGradient}" Margin="0,0,9,0" Padding="13"><Grid><Grid.ColumnDefinitions><ColumnDefinition Width="50"/><ColumnDefinition/></Grid.ColumnDefinitions><Border Width="42" Height="42" CornerRadius="10" Background="#12634B"><TextBlock Style="{StaticResource IconText}" Text="&#xE192;" Foreground="#7CF6BD" FontSize="21"/></Border><StackPanel Grid.Column="1"><TextBlock x:Name="ApiActiveCountText" Text="0" FontSize="26" FontWeight="Bold"/><TextBlock Text="Aktivnih ključeva" Foreground="{StaticResource MutedBrush}" FontSize="10"/></StackPanel></Grid></Border>
                                 <Border Grid.Column="1" Style="{StaticResource CardBorder}" Background="{StaticResource BlueCardGradient}" Margin="0,0,9,0" Padding="13"><Grid><Grid.ColumnDefinitions><ColumnDefinition Width="50"/><ColumnDefinition/></Grid.ColumnDefinitions><Border Width="42" Height="42" CornerRadius="10" Background="#164B87"><TextBlock Style="{StaticResource IconText}" Text="&#xE83E;" Foreground="#65D0FF" FontSize="21"/></Border><StackPanel Grid.Column="1"><TextBlock x:Name="ApiRequestCountText" Text="0" FontSize="26" FontWeight="Bold"/><TextBlock Text="API zahtjeva • zadnjih 30 dana" Foreground="{StaticResource MutedBrush}" FontSize="10"/></StackPanel></Grid></Border>
@@ -628,9 +636,11 @@
                                     </DataGrid>
                                 </Grid>
                             </Border>
-                            <Grid Grid.Row="2"><Grid.ColumnDefinitions><ColumnDefinition Width="0.95*"/><ColumnDefinition Width="1.9*"/></Grid.ColumnDefinitions>
-                                <Border Grid.Column="0" Style="{StaticResource CardBorder}" Margin="0,0,9,0" Padding="14"><StackPanel><TextBlock Text="Brzi postupci" Style="{StaticResource SectionTitle}"/><Button Style="{StaticResource PrimaryButton}" HorizontalContentAlignment="Left" Content="＋  Generiraj novi ključ" Click="NewApiKey_Click"/><Button Style="{StaticResource DangerButton}" HorizontalContentAlignment="Left" Content="⊘  Opozovi odabrani ključ" Click="RevokeApiKey_Click"/><Button Style="{StaticResource SecondaryButton}" HorizontalContentAlignment="Left" Content="⧉  Kopiraj endpoint" Click="CopyApiEndpoint_Click"/></StackPanel></Border>
-                                <Border Grid.Column="1" Style="{StaticResource CardBorder}" Padding="14">
+                            <Grid x:Name="ApiBottomGrid" Grid.Row="2">
+                                <Grid.ColumnDefinitions><ColumnDefinition x:Name="ApiQuickColumn" Width="0.95*"/><ColumnDefinition x:Name="ApiEndpointColumn" Width="1.9*"/></Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions><RowDefinition x:Name="ApiBottomPrimaryRow" Height="*"/><RowDefinition x:Name="ApiBottomSecondaryRow" Height="0"/></Grid.RowDefinitions>
+                                <Border x:Name="ApiQuickCard" Grid.Column="0" Style="{StaticResource CardBorder}" Margin="0,0,9,0" Padding="14"><StackPanel><TextBlock Text="Brzi postupci" Style="{StaticResource SectionTitle}"/><Button Style="{StaticResource PrimaryButton}" HorizontalContentAlignment="Left" Content="＋  Generiraj novi ključ" Click="NewApiKey_Click"/><Button Style="{StaticResource DangerButton}" HorizontalContentAlignment="Left" Content="⊘  Opozovi odabrani ključ" Click="RevokeApiKey_Click"/><Button Style="{StaticResource SecondaryButton}" HorizontalContentAlignment="Left" Content="⧉  Kopiraj endpoint" Click="CopyApiEndpoint_Click"/></StackPanel></Border>
+                                <Border x:Name="ApiEndpointCard" Grid.Column="1" Style="{StaticResource CardBorder}" Padding="14">
                                     <Grid><Grid.RowDefinitions><RowDefinition Height="35"/><RowDefinition Height="*"/></Grid.RowDefinitions>
                                         <DockPanel><TextBlock Text="API endpointi" Style="{StaticResource SectionTitle}"/><Border DockPanel.Dock="Right" Style="{StaticResource SuccessPill}"><TextBlock Text="● API je operativan" Foreground="{StaticResource SuccessBrush}" FontSize="10"/></Border></DockPanel>
                                         <Grid Grid.Row="1" Margin="0,8,0,0"><Grid.ColumnDefinitions><ColumnDefinition Width="1.15*"/><ColumnDefinition Width="1*"/></Grid.ColumnDefinitions>
