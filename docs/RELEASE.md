@@ -11,7 +11,7 @@ No Inno Setup, NSIS or external installer compiler is required.
 ## Build
 
 ```powershell
-.\scripts\build-release.ps1 -Version 0.9.0
+.\scripts\build-release.ps1 -Version 0.9.1
 ```
 
 The script must produce in `dist/`:
@@ -19,8 +19,8 @@ The script must produce in `dist/`:
 - `MYWO-Setup.exe`
 - `MYWO-Portable.exe`
 - `MYWO-Update.exe`
-- `MYWO-Update-Payload-0.9.0.zip`
-- `MYWO-Installed-Files-0.9.0.zip`
+- `MYWO-Update-Payload-0.9.1.zip`
+- `MYWO-Installed-Files-0.9.1.zip`
 - `update.json`
 - `SHA256SUMS.txt`
 
@@ -47,3 +47,8 @@ There is intentionally no `uninstall.exe`, `unins000.exe` or other dedicated uni
 ## Required validation
 
 Test on a clean Windows 11 x64 VM/user profile: setup, first launch, shortcuts, Installed Apps entry, update, uninstall with preserved data, uninstall with removed data, portable mode, database migration, XML/CSV publishing, API startup, CSV round-trip, backup/restore and 100/125/150/200% display scaling.
+
+
+## Responsive UI QA
+
+Before publishing, test the screen-size matrix in `RESPONSIVE-UI.md` in addition to the automated Windows smoke tests.
