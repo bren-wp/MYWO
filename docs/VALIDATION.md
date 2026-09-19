@@ -1,4 +1,4 @@
-# Validation – MYWO v0.9.3
+# Validation – MYWO v0.9.4
 
 ## Static source validation
 
@@ -31,7 +31,7 @@ A release is not accepted merely because the source looks correct. The Windows p
 - required release artifact and non-empty-file checks;
 - GitHub Release publication.
 
-## v0.9.3 responsive checks
+## v0.9.4 responsive checks
 
 The source contract now additionally covers:
 
