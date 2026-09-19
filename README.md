@@ -10,11 +10,11 @@
 
 [![Windows](https://img.shields.io/badge/Windows-10%20%7C%2011-2563EB?style=for-the-badge&logo=windows11&logoColor=white)](https://github.com/bren-wp/MYWO/releases/latest)
 [![.NET](https://img.shields.io/badge/.NET-10-512BD4?style=for-the-badge&logo=dotnet&logoColor=white)](https://dotnet.microsoft.com/)
-[![Release](https://img.shields.io/badge/release-v0.9.4-22C55E?style=for-the-badge)](https://github.com/bren-wp/MYWO/releases/tag/v0.9.4)
+[![Release](https://img.shields.io/badge/release-v0.9.5-22C55E?style=for-the-badge)](https://github.com/bren-wp/MYWO/releases/tag/v0.9.5)
 [![Windows Release](https://github.com/bren-wp/MYWO/actions/workflows/windows-release.yml/badge.svg)](https://github.com/bren-wp/MYWO/actions/workflows/windows-release.yml)
 
-**[Preuzmi Setup](https://github.com/bren-wp/MYWO/releases/download/v0.9.4/MYWO-Setup.exe)** ·
-**[Preuzmi Portable](https://github.com/bren-wp/MYWO/releases/download/v0.9.4/MYWO-Portable.exe)** ·
+**[Preuzmi Setup](https://github.com/bren-wp/MYWO/releases/download/v0.9.5/MYWO-Setup.exe)** ·
+**[Preuzmi Portable](https://github.com/bren-wp/MYWO/releases/download/v0.9.5/MYWO-Portable.exe)** ·
 **[Najnoviji release](https://github.com/bren-wp/MYWO/releases/latest)**
 
 </div>
@@ -38,7 +38,7 @@ MYWO koristi vlastiti tamni vizualni sustav prenesen iz odobrenih referentnih ek
 
 <img src="src/MYWO.Desktop/Assets/mywo-logo.png" alt="MYWO brand icon" width="72" align="right">
 
-Od v0.9.4 sučelje ima **full, compact, narrow i ultra-narrow** način rada uz dodatni short-window režim. Veličina i položaj glavnog prozora pamte se između pokretanja, promjena DPI-ja i rezolucije ponovno pokreće work-area reflow, a CI stvarno resizea pokrenutu aplikaciju kroz više desktop veličina prije objave releasea. Dashboard, Objava, API i Promjene cijena reflowaju KPI kartice na užim prozorima, Administracija se na narrow prikazu slaže vertikalno, a API, Arhiva i Promjene cijena imaju vertikalni fallback umjesto rezanja donjeg sadržaja. Compact sidebar dobiva tooltipove, akcijske trake se prelamaju bez preklapanja, dijalozi poštuju work-area monitora na kojem se stvarno otvaraju, a Per-Monitor V2 DPI awareness održava geometriju pri 125/150/175/200% scalingu. DataGridovi koriste virtualizaciju i automatske scrollbare za velike kataloge.
+Od v0.9.5 sučelje ima **full, compact, narrow i ultra-narrow** način rada uz dodatni short-window režim. Veličina i položaj glavnog prozora pamte se između pokretanja, a promjena DPI-ja ili konfiguracije zaslona ponovno pokreće work-area reflow. Proizvodi i Usluge na kompaktnim širinama prelamaju filtere u dva reda; Dashboard, API, Arhiva i Promjene cijena dobivaju dodatne vertikalne fallback rasporede; Administracija prilagođava broj stupaca postavki; a Categories zadržava ključne akcije i kada ultra-narrow prikaz sakrije stablo. CI sada stvarno resizea pokrenutu Portable aplikaciju kroz devet desktop veličina od 880×600 do 3840×2160 prije objave releasea. Compact sidebar ima tooltipove, akcijske trake se prelamaju bez preklapanja, dijalozi poštuju work-area monitora na kojem se otvaraju, a Per-Monitor V2 ostaje aktivan za mixed-DPI Windows okruženja. DataGridovi koriste virtualizaciju i automatske scrollbare za velike kataloge.
 
 ## Ključne mogućnosti
 
@@ -93,7 +93,7 @@ API ključevi nastaju sigurnim RNG-om i u bazi se čuva samo hash. Lokalni API s
 ```powershell
 dotnet restore .\MYWO.sln
 dotnet build .\MYWO.sln -c Release
-.\scripts\build-release.ps1 -Version 0.9.4
+.\scripts\build-release.ps1 -Version 0.9.5
 ```
 
 ## Dokumentacija
