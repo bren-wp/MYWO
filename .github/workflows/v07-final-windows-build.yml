@@ -1,0 +1,149 @@
+name: MYWO v0.7 Final Windows Build
+
+on:
+  push:
+    branches:
+      - chatgpt/mywo-v07-finalbuild
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+env:
+  DOTNET_CLI_TELEMETRY_OPTOUT: 1
+  DOTNET_NOLOGO: 1
+
+jobs:
+  build:
+    runs-on: windows-latest
+    timeout-minutes: 45
+
+    steps:
+      - name: Checkout transfer branch
+        uses: actions/checkout@v4
+
+      - name: Reconstruct verified MYWO source
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $parts = 0..4 | ForEach-Object { ".build\v07payload.part{0:D2}" -f $_ }
+          foreach ($p in $parts) {
+            if (-not (Test-Path $p)) { throw "Missing payload segment: $p" }
+          }
+
+          $b64 = ($parts | ForEach-Object { (Get-Content $_ -Raw).Trim() }) -join ''
+          [IO.File]::WriteAllBytes('mywo-v07.tar.xz', [Convert]::FromBase64String($b64))
+
+          $expected = '4858c8197c71e6a25204da9705158673e3e51e75c5ae376b1e744345f707a536'
+          $actual = (Get-FileHash '.\mywo-v07.tar.xz' -Algorithm SHA256).Hash.ToLowerInvariant()
+          Write-Host "Payload SHA256: $actual"
+          if ($actual -ne $expected) {
+            throw "Payload SHA256 mismatch. Expected $expected, got $actual"
+          }
+
+          New-Item -ItemType Directory -Path '.\buildsrc' -Force | Out-Null
+          tar.exe -xJf '.\mywo-v07.tar.xz' -C '.\buildsrc'
+          if (-not (Test-Path '.\buildsrc\MYWO.sln')) { throw 'MYWO.sln not reconstructed.' }
+          if (-not (Test-Path '.\buildsrc\src\MYWO.Desktop\MainWindow.xaml')) { throw 'Desktop UI source missing.' }
+
+      - name: Setup .NET 10 SDK
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Show SDK
+        shell: pwsh
+        run: dotnet --info
+
+      - name: Validate MYWO source and 1:1 geometry locks
+        shell: pwsh
+        working-directory: buildsrc
+        run: .\scripts\validate-source.ps1
+
+      - name: Build MYWO release
+        shell: pwsh
+        working-directory: buildsrc
+        run: .\scripts\build-release.ps1 -Version 0.7.0
+
+      - name: Verify PE executables and checksums
+        shell: pwsh
+        working-directory: buildsrc
+        run: |
+          $ErrorActionPreference = 'Stop'
+          foreach ($name in @('MYWO-Setup.exe','MYWO-Portable.exe','MYWO-Update.exe')) {
+            $path = Join-Path '.\dist' $name
+            if (-not (Test-Path $path)) { throw "Missing $name" }
+            $bytes = [IO.File]::ReadAllBytes((Resolve-Path $path))
+            if ($bytes.Length -lt 2 -or $bytes[0] -ne 0x4D -or $bytes[1] -ne 0x5A) {
+              throw "$name is not a Windows PE executable."
+            }
+            Write-Host "$name $((Get-Item $path).Length) bytes SHA256=$((Get-FileHash $path -Algorithm SHA256).Hash)"
+          }
+
+      - name: Portable runtime smoke test
+        shell: pwsh
+        working-directory: buildsrc
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $test = Join-Path $env:RUNNER_TEMP 'mywo-portable-smoke'
+          if (Test-Path $test) { Remove-Item $test -Recurse -Force }
+          New-Item -ItemType Directory -Path $test -Force | Out-Null
+          Copy-Item '.\dist\MYWO-Portable.exe' (Join-Path $test 'MYWO-Portable.exe')
+          $p = Start-Process (Join-Path $test 'MYWO-Portable.exe') -PassThru
+          Start-Sleep -Seconds 8
+          if ($p.HasExited) { throw "MYWO-Portable.exe exited unexpectedly with code $($p.ExitCode)." }
+          $db = Join-Path $test 'MYWO-Data\mywo.db'
+          if (-not (Test-Path $db)) { throw 'Portable mode did not create MYWO-Data\mywo.db.' }
+          Stop-Process -Id $p.Id -Force
+          Write-Host 'Portable runtime smoke test passed.'
+
+      - name: Setup, registry and integrated uninstall smoke test
+        shell: pwsh
+        working-directory: buildsrc
+        run: |
+          $ErrorActionPreference = 'Stop'
+          & '.\dist\MYWO-Setup.exe' --silent
+          Start-Sleep -Seconds 5
+
+          $install = Join-Path $env:LOCALAPPDATA 'Programs\MYWO'
+          foreach ($name in @('MYWO.exe','MYWO-Update.exe')) {
+            if (-not (Test-Path (Join-Path $install $name))) { throw "Installed $name is missing." }
+          }
+
+          if (Test-Path (Join-Path $install 'uninstall.exe')) { throw 'Standalone uninstall.exe is forbidden.' }
+          if (Get-ChildItem $install -Filter 'unins*.exe' -ErrorAction SilentlyContinue) {
+            throw 'Standalone Inno-style uninstaller is forbidden.'
+          }
+
+          $keyPath = 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\MYWO'
+          if (-not (Test-Path $keyPath)) { throw 'Windows uninstall registry entry is missing.' }
+          $key = Get-ItemProperty $keyPath
+          if ($key.UninstallString -notmatch 'MYWO-Update\.exe.*--uninstall') {
+            throw "Uninstall is not integrated into MYWO-Update.exe: $($key.UninstallString)"
+          }
+
+          & (Join-Path $install 'MYWO-Update.exe') --uninstall --quiet
+          Start-Sleep -Seconds 8
+          if (Test-Path $install) { throw 'Integrated uninstall did not remove the installation directory.' }
+          if (Test-Path $keyPath) { throw 'Integrated uninstall did not remove the registry entry.' }
+          Write-Host 'Setup and integrated uninstall smoke test passed.'
+
+      - name: Create final release bundle
+        shell: pwsh
+        working-directory: buildsrc
+        run: |
+          $ErrorActionPreference = 'Stop'
+          Compress-Archive -Path '.\dist\*' -DestinationPath '.\MYWO-v0.7.0-Windows-Final.zip' -CompressionLevel Optimal -Force
+          (Get-FileHash '.\MYWO-v0.7.0-Windows-Final.zip' -Algorithm SHA256).Hash.ToLowerInvariant() |
+            Set-Content '.\MYWO-v0.7.0-Windows-Final.zip.sha256.txt' -Encoding ASCII
+
+      - name: Upload final Windows executables
+        uses: actions/upload-artifact@v4
+        with:
+          name: MYWO-v0.7.0-Windows-Final
+          path: |
+            buildsrc/dist/*
+            buildsrc/MYWO-v0.7.0-Windows-Final.zip
+            buildsrc/MYWO-v0.7.0-Windows-Final.zip.sha256.txt
+          if-no-files-found: error
+          retention-days: 30
