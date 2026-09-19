@@ -10,9 +10,9 @@
     <RootNamespace>MYWO.Desktop</RootNamespace>
     <ApplicationIcon>Assets\mywo.ico</ApplicationIcon>
     <ApplicationManifest>app.manifest</ApplicationManifest>
-    <Version>0.9.4</Version>
-    <FileVersion>0.9.4.0</FileVersion>
-    <AssemblyVersion>0.9.4.0</AssemblyVersion>
+    <Version>0.9.5</Version>
+    <FileVersion>0.9.5.0</FileVersion>
+    <AssemblyVersion>0.9.5.0</AssemblyVersion>
     <Authors>MYWO</Authors>
     <Product>MYWO – Upravljanje cjenicima</Product>
     <Description>Windows aplikacija za upravljanje, izvoz i objavu strukturiranih cjenika proizvoda i usluga.</Description>
