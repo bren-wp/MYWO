@@ -186,7 +186,7 @@ internal static class Program
     private static HttpClient CreateHttpClient()
     {
         var http = new HttpClient { Timeout = TimeSpan.FromSeconds(45) };
-        var updaterVersion = typeof(Program).Assembly.GetName().Version?.ToString(3) ?? "0.9.3";
+        var updaterVersion = typeof(Program).Assembly.GetName().Version?.ToString(3) ?? "0.9.4";
         http.DefaultRequestHeaders.UserAgent.ParseAdd($"MYWO-Updater/{updaterVersion}");
         return http;
     }
