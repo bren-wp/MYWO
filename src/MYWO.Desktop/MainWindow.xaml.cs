@@ -37,7 +37,7 @@ public partial class MainWindow : Window
         InitializeComponent();
         SourceInitialized += (_, _) => ApplyWindows11Chrome();
         DatabasePathText.Text = $"Baza: {AppDb.DatabasePath}";
-        var appVersion = typeof(MainWindow).Assembly.GetName().Version?.ToString(3) ?? "0.9.1";
+        var appVersion = typeof(MainWindow).Assembly.GetName().Version?.ToString(3) ?? "0.9.2";
         ReleaseModeText.Text = $"MYWO v{appVersion} • {(AppPaths.IsPortable ? "Portable" : "Instalirana verzija")}";
         SidebarVersionText.Text = $"MYWO v{appVersion}";
         _scheduleTimer.Tick += ScheduleTimer_Tick;
@@ -86,6 +86,25 @@ public partial class MainWindow : Window
         HeaderContextPanel.Visibility = compact ? Visibility.Collapsed : Visibility.Visible;
         MainPageHost.Margin = narrow ? new Thickness(12, 12, 12, 6) : compact ? new Thickness(16, 14, 16, 7) : new Thickness(20, 16, 20, 8);
 
+        DashboardKpiGrid.Columns = narrow ? 3 : 6;
+        DashboardKpiGrid.Height = narrow ? 280 : 136;
+        ApplyPanelSpacing(DashboardKpiGrid, DashboardKpiGrid.Columns, 8);
+
+        PublishKpiGrid.Columns = narrow ? 3 : 5;
+        PublishKpiGrid.Height = narrow ? 224 : 112;
+        ApplyPanelSpacing(PublishKpiGrid, PublishKpiGrid.Columns, 7);
+
+        PublishActionGrid.Columns = narrow ? 2 : 4;
+        ApplyPanelSpacing(PublishActionGrid, PublishActionGrid.Columns, 8);
+
+        ApiKpiGrid.Columns = narrow ? 2 : 4;
+        ApiKpiGrid.Height = narrow ? 200 : 100;
+        ApplyPanelSpacing(ApiKpiGrid, ApiKpiGrid.Columns, 9);
+
+        PriceKpiGrid.Columns = narrow ? 2 : 4;
+        PriceKpiGrid.Height = narrow ? 196 : 98;
+        ApplyPanelSpacing(PriceKpiGrid, PriceKpiGrid.Columns, 8);
+
         ProductDrawer.Width = narrow ? 350 : compact ? 390 : 422;
         ServiceDrawer.Width = narrow ? 350 : compact ? 390 : 420;
 
@@ -93,6 +112,17 @@ public partial class MainWindow : Window
         SettingsCompaniesColumn.MinWidth = narrow ? 220 : 240;
         SettingsSystemColumn.MinWidth = narrow ? 390 : 430;
         NotificationPopup.HorizontalOffset = narrow ? -260 : -310;
+    }
+
+    private static void ApplyPanelSpacing(Panel panel, int columns, double gap)
+    {
+        var children = panel.Children.OfType<FrameworkElement>().ToArray();
+        for (var i = 0; i < children.Length; i++)
+        {
+            var lastColumn = (i + 1) % columns == 0;
+            var lastRow = i >= children.Length - columns;
+            children[i].Margin = new Thickness(0, 0, lastColumn ? 0 : gap, lastRow ? 0 : gap);
+        }
     }
 
     private void LoadCompanies()
