@@ -8,7 +8,7 @@ public partial class TextEntityDialog : Window
 {
     public string EntityName => NameBox.Text.Trim();
     public string Kind => (KindBox.SelectedItem as ComboBoxItem)?.Tag?.ToString() ?? "both";
-    public bool IsActive => ActiveBox.IsChecked == true;
+    public new bool IsActive => ActiveBox.IsChecked == true;
 
     public TextEntityDialog(string title, string name, string kind, bool active, bool showKind)
     {
