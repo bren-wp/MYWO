@@ -1,4 +1,4 @@
-# MYWO Windows release procedure – v0.9.3
+# MYWO Windows release procedure – v0.9.4
 
 ## Build requirements
 
@@ -11,7 +11,7 @@ No Inno Setup, NSIS or external installer compiler is required.
 ## Build
 
 ```powershell
-.\scripts\build-release.ps1 -Version 0.9.3
+.\scripts\build-release.ps1 -Version 0.9.4
 ```
 
 The script produces in `dist/`:
@@ -19,9 +19,9 @@ The script produces in `dist/`:
 - `MYWO-Setup.exe`
 - `MYWO-Portable.exe`
 - `MYWO-Update.exe`
-- `MYWO-Update-Payload-0.9.3.zip`
-- `MYWO-Installed-Files-0.9.3.zip`
-- `MYWO-0.9.3-source.zip`
+- `MYWO-Update-Payload-0.9.4.zip`
+- `MYWO-Installed-Files-0.9.4.zip`
+- `MYWO-0.9.4-source.zip`
 - `update.json`
 - `SHA256SUMS.txt`
 
@@ -86,3 +86,8 @@ Use the matrix in `RESPONSIVE-UI.md` and compare the full desktop breakpoint aga
 ## Release signing
 
 Current CI can produce deterministic/tested binaries without a code-signing certificate. For commercial distribution, Authenticode signing should be added when a valid Windows code-signing certificate and secure signing channel are available; do not embed private signing keys in the repository.
+
+
+## Responsive window resize smoke test
+
+The Windows release workflow starts `MYWO-Portable.exe`, obtains the real main-window handle and resizes it through the supported QA matrix. This runtime check is performed before Setup/install/uninstall validation and before publishing the release.
