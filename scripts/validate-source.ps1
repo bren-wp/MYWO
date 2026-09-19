@@ -1,7 +1,7 @@
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 $root = Split-Path -Parent $PSScriptRoot
-$version = '0.9.3'
+$version = '0.9.4'
 
 Write-Host '[1/6] Validating XAML/XML...'
 Get-ChildItem (Join-Path $root 'src\MYWO.Desktop') -Filter '*.xaml' -Recurse | ForEach-Object {
@@ -31,10 +31,19 @@ foreach ($token in @(
     'x:Name="SettingsPrimaryRow"',
     'x:Name="SettingsSecondaryRow"',
     'x:Name="SettingsCompaniesCard"',
-    'x:Name="SettingsSystemCard"'
+    'x:Name="SettingsSystemCard"',
+    'x:Name="SearchShortcutBadge"',
+    'x:Name="NotificationPopupCard"'
 )) {
     if (-not $main.Contains($token)) { throw "Responsive layout token missing: $token" }
 }
+
+$mainCode = Get-Content (Join-Path $root 'src\MYWO.Desktop\MainWindow.xaml.cs') -Raw
+foreach ($token in @('ultraNarrow','DpiChanged','WindowStateService.Restore','FitWindowToCurrentWorkArea')) {
+    if (-not $mainCode.Contains($token)) { throw "Adaptive runtime token missing: $token" }
+}
+$windowStatePath = Join-Path $root 'src\MYWO.Desktop\Services\WindowStateService.cs'
+if (-not (Test-Path $windowStatePath)) { throw 'Missing persisted window-state service.' }
 
 $manifestPath = Join-Path $root 'src\MYWO.Desktop\app.manifest'
 if (-not (Test-Path $manifestPath)) { throw 'Missing Per-Monitor DPI manifest.' }
