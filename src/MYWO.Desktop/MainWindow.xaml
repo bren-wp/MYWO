@@ -156,7 +156,7 @@
                                     </Style>
                                 </TextBlock.Style>
                             </TextBlock>
-                            <Border HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,8,0" Background="#142841" BorderBrush="#264665" BorderThickness="1" CornerRadius="6" Padding="7,3" IsHitTestVisible="False">
+                            <Border x:Name="SearchShortcutBadge" HorizontalAlignment="Right" VerticalAlignment="Center" Margin="0,0,8,0" Background="#142841" BorderBrush="#264665" BorderThickness="1" CornerRadius="6" Padding="7,3" IsHitTestVisible="False">
                                 <TextBlock Text="Ctrl + K" FontSize="10" Foreground="{StaticResource MutedBrush}"/>
                             </Border>
                         </Grid>
@@ -169,7 +169,7 @@
                             </Button>
                         </StackPanel>
                         <Popup x:Name="NotificationPopup" PlacementTarget="{Binding ElementName=NotificationButton}" Placement="Bottom" HorizontalOffset="-310" VerticalOffset="8" StaysOpen="False" AllowsTransparency="True">
-                            <Border Width="360" MaxHeight="440" Background="#0E1C2F" BorderBrush="#2B4D70" BorderThickness="1" CornerRadius="10" Padding="12">
+                            <Border x:Name="NotificationPopupCard" Width="360" MaxHeight="440" Background="#0E1C2F" BorderBrush="#2B4D70" BorderThickness="1" CornerRadius="10" Padding="12">
                                 <Grid><Grid.RowDefinitions><RowDefinition Height="42"/><RowDefinition Height="*"/><RowDefinition Height="42"/></Grid.RowDefinitions>
                                     <DockPanel><TextBlock Text="Obavijesti" Style="{StaticResource SectionTitle}" VerticalAlignment="Center"/><TextBlock x:Name="NotificationSummaryText" DockPanel.Dock="Right" Text="0 nepročitanih" Foreground="{StaticResource MutedBrush}" FontSize="10" VerticalAlignment="Center"/></DockPanel>
                                     <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto"><ItemsControl x:Name="NotificationList"><ItemsControl.ItemTemplate><DataTemplate><Border Style="{StaticResource SoftCardBorder}" Margin="0,0,0,7" Padding="10"><StackPanel><DockPanel><TextBlock Text="{Binding Title}" FontWeight="SemiBold"/><TextBlock DockPanel.Dock="Right" Text="{Binding CreatedAt, StringFormat={}{0:dd.MM. HH:mm}}" Foreground="{StaticResource Muted2Brush}" FontSize="9"/></DockPanel><TextBlock Text="{Binding Message}" Foreground="{StaticResource MutedBrush}" FontSize="10" TextWrapping="Wrap" Margin="0,4,0,0"/></StackPanel></Border></DataTemplate></ItemsControl.ItemTemplate></ItemsControl></ScrollViewer>
