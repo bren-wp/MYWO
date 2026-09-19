@@ -1,5 +1,21 @@
 # Changelog
 
+## 0.9.3
+
+- added explicit Windows Per-Monitor V2 DPI awareness and long-path manifest support
+- changed window work-area fitting from primary-screen assumptions to the monitor on which each window opens
+- clamped dialog position as well as dimensions so dialogs remain inside the visible work area
+- added a short-window breakpoint that reduces sidebar/header chrome on limited-height laptop displays
+- added compact-navigation tooltips when labels are hidden
+- made Categories split width adaptive instead of keeping the left pane permanently fixed
+- changed Administration settings to a true vertical stacked layout below the narrow breakpoint
+- added resize-safe minimum sizes, layout rounding and scroll fallback across all management dialogs
+- wrapped Brand, Company, API-key-created, prompt and generic entity dialog content so actions remain reachable
+- enabled explicit DataGrid row/column virtualization, recycling and automatic scrollbars for large catalogs
+- added clear keyboard-focus borders to primary actions and navigation controls
+- expanded release validation to require responsive layout tokens and the Per-Monitor V2 manifest
+- synchronized Desktop, Setup, Updater, documentation and Windows release pipeline to 0.9.3
+
 ## 0.9.2
 
 - added vertical fallback scrolling to API, Archive and Price Changes so dense modules remain usable on short laptop displays
