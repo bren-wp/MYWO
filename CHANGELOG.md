@@ -1,5 +1,20 @@
 # Changelog
 
+## 0.9.1
+
+- added adaptive full / compact / narrow desktop layouts
+- lowered the practical main-window minimum to 880×600 DIP
+- fixed product/service toolbar and footer overlap with wrapping action layouts
+- changed brittle fixed filter widths to proportional columns
+- added compact sidebar, top toolbar and editor drawer behavior
+- made all application windows respect the available Windows work area
+- enabled resize grips for management dialogs that could otherwise be trapped off-screen
+- added high-quality WPF bitmap scaling and lower-memory product preview decoding
+- added responsive UI/UX documentation and a screen-size QA matrix
+- rewrote README as a marketing/product landing page with current downloads, brand imagery and badges
+- removed bin/obj build outputs from generated source archives
+- updated Desktop, Setup, Updater and Windows CI release pipeline to 0.9.1
+
 ## 0.9.0
 
 - upgraded the application icon and sidebar brand asset with a multi-resolution MYWO visual
