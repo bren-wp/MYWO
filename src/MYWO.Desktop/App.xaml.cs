@@ -13,6 +13,7 @@ public partial class App : Application
         DispatcherUnhandledException += OnDispatcherUnhandledException;
         AppDomain.CurrentDomain.UnhandledException += OnDomainUnhandledException;
         TaskScheduler.UnobservedTaskException += OnUnobservedTaskException;
+        EventManager.RegisterClassHandler(typeof(Window), FrameworkElement.LoadedEvent, new RoutedEventHandler(FitWindowToWorkArea));
 
         try
         {
@@ -27,6 +28,22 @@ public partial class App : Application
                 "MYWO", MessageBoxButton.OK, MessageBoxImage.Error);
             Shutdown(1);
         }
+    }
+
+    private static void FitWindowToWorkArea(object sender, RoutedEventArgs e)
+    {
+        if (sender is not Window window || window.WindowState != WindowState.Normal) return;
+        var work = SystemParameters.WorkArea;
+        var maxWidth = Math.Max(640, work.Width - 24);
+        var maxHeight = Math.Max(480, work.Height - 24);
+
+        if (window.MinWidth > maxWidth) window.MinWidth = Math.Max(480, maxWidth);
+        if (window.MinHeight > maxHeight) window.MinHeight = Math.Max(360, maxHeight);
+        window.MaxWidth = Math.Min(window.MaxWidth, maxWidth);
+        window.MaxHeight = Math.Min(window.MaxHeight, maxHeight);
+
+        if (double.IsNaN(window.Width) || window.Width <= 0 || window.Width > maxWidth) window.Width = maxWidth;
+        if (double.IsNaN(window.Height) || window.Height <= 0 || window.Height > maxHeight) window.Height = maxHeight;
     }
 
     protected override void OnExit(ExitEventArgs e)
