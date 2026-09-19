@@ -1,7 +1,7 @@
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 $root = Split-Path -Parent $PSScriptRoot
-$version = '0.9.0'
+$version = '0.9.1'
 
 Write-Host '[1/6] Validating XAML/XML...'
 Get-ChildItem (Join-Path $root 'src\MYWO.Desktop') -Filter '*.xaml' -Recurse | ForEach-Object {
@@ -13,7 +13,7 @@ Write-Host '[2/6] Validating reference geometry and design tokens...'
 $main = Get-Content (Join-Path $root 'src\MYWO.Desktop\MainWindow.xaml') -Raw
 $geometry = @(
     'Width="1380" Height="950"',
-    'ColumnDefinition Width="214"',
+    'x:Name="SidebarColumn" Width="214"',
     'RowDefinition Height="42"',
     'RowDefinition Height="68"',
     'x:Name="ProductDrawer" Grid.RowSpan="3" Panel.ZIndex="30" Width="422"',
