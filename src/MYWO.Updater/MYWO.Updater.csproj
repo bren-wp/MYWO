@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <TargetFramework>net10.0-windows</TargetFramework>
+    <UseWindowsForms>true</UseWindowsForms>
+    <EnableWindowsTargeting>true</EnableWindowsTargeting>
+    <Nullable>enable</Nullable>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <AssemblyName>MYWO-Update</AssemblyName>
+    <RootNamespace>MYWO.Updater</RootNamespace>
+    <ApplicationIcon>..\MYWO.Desktop\Assets\mywo.ico</ApplicationIcon>
+    <Version>0.9.0</Version>
+    <FileVersion>0.9.0.0</FileVersion>
+    <AssemblyVersion>0.9.0.0</AssemblyVersion>
+    <Product>MYWO Update</Product>
+    <Company>MYWO</Company>
+    <Description>MYWO updater and integrated uninstaller.</Description>
+  </PropertyGroup>
+</Project>

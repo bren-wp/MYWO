@@ -1,0 +1,29 @@
+<Window x:Class="MYWO.Desktop.ServiceDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Uredi uslugu" Width="580" Height="660" MinHeight="600"
+        WindowStartupLocation="CenterOwner" ResizeMode="CanResizeWithGrip" WindowStyle="None">
+    <Border Background="{StaticResource SurfaceBrush}" BorderBrush="#2B4968" BorderThickness="1" CornerRadius="12">
+        <Grid Margin="22">
+            <Grid.RowDefinitions><RowDefinition Height="64"/><RowDefinition Height="*"/><RowDefinition Height="58"/></Grid.RowDefinitions>
+            <Grid Grid.Row="0" MouseLeftButtonDown="DialogHeader_MouseLeftButtonDown"><Grid.ColumnDefinitions><ColumnDefinition Width="48"/><ColumnDefinition/><ColumnDefinition Width="42"/></Grid.ColumnDefinitions>
+                <Border Width="38" Height="38" CornerRadius="9" Background="#174B88"><TextBlock Style="{StaticResource IconText}" Text="&#xE8C8;" Foreground="#7AD1FF"/></Border>
+                <StackPanel Grid.Column="1" VerticalAlignment="Center"><TextBlock Text="Dodaj / uredi uslugu" FontSize="22" FontWeight="SemiBold"/><TextBlock Text="Upravljajte cijenom, posebnim oblikom prodaje i statusom." Foreground="{StaticResource MutedBrush}" FontSize="11"/></StackPanel>
+                <Button Grid.Column="2" Style="{StaticResource GhostButton}" Content="✕" IsCancel="True"/>
+            </Grid>
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto">
+                <StackPanel Margin="0,0,8,0">
+                    <TextBlock Text="Naziv usluge *"/><TextBox x:Name="NameBox" MaxLength="250"/>
+                    <TextBlock Text="Kategorija" Margin="0,8,0,0"/><ComboBox x:Name="CategoryBox" DisplayMemberPath="Name" SelectedValuePath="Id"/>
+                    <TextBlock Text="Maloprodajna cijena (MPC) *" Margin="0,8,0,0"/><TextBox x:Name="RetailPriceBox"/>
+                    <Border Style="{StaticResource SoftCardBorder}" Padding="14" Margin="0,11,0,0">
+                        <StackPanel><CheckBox x:Name="SpecialSaleBox" Content="Poseban oblik prodaje" Checked="SpecialSaleBox_Changed" Unchecked="SpecialSaleBox_Changed"/><TextBlock Text="Naziv posebnog oblika prodaje" Margin="0,5,0,0"/><TextBox x:Name="SpecialSaleNameBox" MaxLength="150"/><TextBlock Text="Sidrena cijena" Margin="0,8,0,0"/><TextBox x:Name="AnchorPriceBox"/></StackPanel>
+                    </Border>
+                    <TextBlock Text="Status" Margin="0,12,0,0"/><Border Style="{StaticResource SoftCardBorder}" Padding="10,6" Margin="0,3"><CheckBox x:Name="ActiveBox" Content="Aktivna usluga"/></Border>
+                    <TextBlock Text="Aktivna usluga vidljiva je u cjeniku i može se objaviti. Neaktivna ostaje sačuvana u sustavu." Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap" FontSize="11" Margin="0,8,0,0"/>
+                </StackPanel>
+            </ScrollViewer>
+            <Grid Grid.Row="2" Margin="0,10,0,0"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="140"/><ColumnDefinition Width="180"/></Grid.ColumnDefinitions><Button Grid.Column="1" Style="{StaticResource SecondaryButton}" Content="Odustani" IsCancel="True"/><Button Grid.Column="2" Style="{StaticResource PrimaryButton}" Content="Spremi promjene" IsDefault="True" Click="Save_Click"/></Grid>
+        </Grid>
+    </Border>
+</Window>

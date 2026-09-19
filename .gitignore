@@ -1,0 +1,14 @@
+**/bin/
+**/obj/
+.vs/
+.idea/
+*.user
+*.suo
+*.cache
+*.log
+dist/
+TestResults/
+*.db
+*.db-wal
+*.db-shm
+*.bak

@@ -1,0 +1,25 @@
+<Window x:Class="MYWO.Desktop.CategoryDialog"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        Title="Kategorija" Width="600" Height="620" WindowStartupLocation="CenterOwner"
+        ResizeMode="NoResize" WindowStyle="None">
+    <Border Background="{StaticResource SurfaceBrush}" BorderBrush="#2B4968" BorderThickness="1" CornerRadius="12">
+        <Grid Margin="22">
+            <Grid.RowDefinitions><RowDefinition Height="64"/><RowDefinition Height="*"/><RowDefinition Height="58"/></Grid.RowDefinitions>
+            <Grid MouseLeftButtonDown="DialogHeader_MouseLeftButtonDown"><Grid.ColumnDefinitions><ColumnDefinition Width="48"/><ColumnDefinition/><ColumnDefinition Width="42"/></Grid.ColumnDefinitions>
+                <Border Width="38" Height="38" CornerRadius="9" Background="#3A2369"><TextBlock Style="{StaticResource IconText}" Text="&#xE8B7;" Foreground="#BC94FF"/></Border>
+                <StackPanel Grid.Column="1" VerticalAlignment="Center"><TextBlock x:Name="Heading" Text="Kategorija" FontSize="22" FontWeight="SemiBold"/><TextBlock Text="Organizirajte proizvode i usluge u preglednu hijerarhiju." Foreground="{StaticResource MutedBrush}" FontSize="11"/></StackPanel>
+                <Button Grid.Column="2" Style="{StaticResource GhostButton}" Content="✕" IsCancel="True"/>
+            </Grid>
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto"><StackPanel Margin="0,0,8,0">
+                <TextBlock Text="Naziv kategorije *"/><TextBox x:Name="NameBox" MaxLength="150"/>
+                <TextBlock Text="Opis" Margin="0,9,0,0"/><TextBox x:Name="DescriptionBox" MaxLength="500" Height="92" AcceptsReturn="True" TextWrapping="Wrap" VerticalContentAlignment="Top"/>
+                <TextBlock Text="Nadređena kategorija" Margin="0,9,0,0"/><ComboBox x:Name="ParentBox" DisplayMemberPath="Name" SelectedValuePath="Id"/>
+                <TextBlock Text="Primjena" Margin="0,9,0,0"/><ComboBox x:Name="KindBox"><ComboBoxItem Content="Proizvodi i usluge" Tag="both"/><ComboBoxItem Content="Samo proizvodi" Tag="product"/><ComboBoxItem Content="Samo usluge" Tag="service"/></ComboBox>
+                <Border Style="{StaticResource SoftCardBorder}" Padding="10,6" Margin="0,12,0,0"><CheckBox x:Name="ActiveBox" Style="{StaticResource ToggleSwitch}" Content="Aktivna kategorija"/></Border>
+                <TextBlock Text="Aktivne kategorije mogu se koristiti u unosu i objaviti u strukturiranim podacima." Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap" FontSize="11" Margin="0,7,0,0"/>
+            </StackPanel></ScrollViewer>
+            <Grid Grid.Row="2" Margin="0,10,0,0"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="140"/><ColumnDefinition Width="190"/></Grid.ColumnDefinitions><Button Grid.Column="1" Style="{StaticResource SecondaryButton}" Content="Odustani" IsCancel="True"/><Button Grid.Column="2" Style="{StaticResource PrimaryButton}" Content="Spremi kategoriju" IsDefault="True" Click="Save_Click"/></Grid>
+        </Grid>
+    </Border>
+</Window>

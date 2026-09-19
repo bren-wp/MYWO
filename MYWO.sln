@@ -1,0 +1,30 @@
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MYWO.Desktop", "src\MYWO.Desktop\MYWO.Desktop.csproj", "{3A0C8F6A-3F56-4AA4-B1BC-7E8E81715A22}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MYWO.Updater", "src\MYWO.Updater\MYWO.Updater.csproj", "{A51D1F1D-8722-4F44-91BA-7BCAB0D06061}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "MYWO.Setup", "src\MYWO.Setup\MYWO.Setup.csproj", "{93E2AF8D-5F3B-455E-873C-597339E45AC4}"
+EndProject
+Global
+    GlobalSection(SolutionConfigurationPlatforms) = preSolution
+        Debug|Any CPU = Debug|Any CPU
+        Release|Any CPU = Release|Any CPU
+    EndGlobalSection
+    GlobalSection(ProjectConfigurationPlatforms) = postSolution
+        {3A0C8F6A-3F56-4AA4-B1BC-7E8E81715A22}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+        {3A0C8F6A-3F56-4AA4-B1BC-7E8E81715A22}.Debug|Any CPU.Build.0 = Debug|Any CPU
+        {3A0C8F6A-3F56-4AA4-B1BC-7E8E81715A22}.Release|Any CPU.ActiveCfg = Release|Any CPU
+        {3A0C8F6A-3F56-4AA4-B1BC-7E8E81715A22}.Release|Any CPU.Build.0 = Release|Any CPU
+        {A51D1F1D-8722-4F44-91BA-7BCAB0D06061}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+        {A51D1F1D-8722-4F44-91BA-7BCAB0D06061}.Debug|Any CPU.Build.0 = Debug|Any CPU
+        {A51D1F1D-8722-4F44-91BA-7BCAB0D06061}.Release|Any CPU.ActiveCfg = Release|Any CPU
+        {A51D1F1D-8722-4F44-91BA-7BCAB0D06061}.Release|Any CPU.Build.0 = Release|Any CPU
+        {93E2AF8D-5F3B-455E-873C-597339E45AC4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+        {93E2AF8D-5F3B-455E-873C-597339E45AC4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+        {93E2AF8D-5F3B-455E-873C-597339E45AC4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+        {93E2AF8D-5F3B-455E-873C-597339E45AC4}.Release|Any CPU.Build.0 = Release|Any CPU
+    EndGlobalSection
+EndGlobal
