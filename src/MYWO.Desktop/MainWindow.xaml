@@ -611,7 +611,8 @@
                         </ScrollViewer>
 
                         <!-- API -->
-                        <Grid x:Name="ApiPanel" Visibility="Collapsed">
+                        <ScrollViewer x:Name="ApiPanel" Visibility="Collapsed" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                            <Grid x:Name="ApiLayoutGrid" MinHeight="620">
                             <Grid.RowDefinitions><RowDefinition Height="100"/><RowDefinition Height="355"/><RowDefinition Height="*"/></Grid.RowDefinitions>
                             <Grid Grid.Row="0" Margin="0,0,0,9">
                                 <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/><ColumnDefinition Width="176"/></Grid.ColumnDefinitions>
@@ -640,10 +641,12 @@
                                     </Grid>
                                 </Border>
                             </Grid>
-                        </Grid>
+                            </Grid>
+                        </ScrollViewer>
 
                         <!-- HISTORY -->
-                        <Grid x:Name="HistoryPanel" Visibility="Collapsed">
+                        <ScrollViewer x:Name="HistoryPanel" Visibility="Collapsed" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                            <Grid x:Name="HistoryLayoutGrid" MinHeight="540">
                             <Grid.RowDefinitions><RowDefinition Height="54"/><RowDefinition Height="*"/><RowDefinition Height="205"/></Grid.RowDefinitions>
                             <DockPanel Grid.Row="0" LastChildFill="False" Margin="0,0,0,9">
                                 <StackPanel Orientation="Horizontal">
@@ -660,10 +663,12 @@
                                 <Border Grid.Column="1" Style="{StaticResource CardBorder}" Margin="0,0,8,0" Padding="14"><StackPanel><TextBlock Text="Datoteka i pregled" Style="{StaticResource SectionTitle}"/><TextBlock x:Name="HistoryDetailsPath" Text="—" Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap" Margin="0,13,0,0"/><TextBlock x:Name="HistoryDetailsCount" Text="0 stavki" Margin="0,10,0,0"/><TextBlock Text="Verzionirane objave ostaju dostupne za provjeru integriteta i povrat podataka." Foreground="{StaticResource MutedBrush}" TextWrapping="Wrap" FontSize="10" Margin="0,10,0,0"/></StackPanel></Border>
                                 <Border Grid.Column="2" Style="{StaticResource CardBorder}" Padding="12"><StackPanel><TextBlock Text="Akcije" Style="{StaticResource SectionTitle}"/><Button Style="{StaticResource PrimaryButton}" Content="Provjeri integritet" Click="VerifySnapshot_Click"/><Button Style="{StaticResource SecondaryButton}" Content="Otvori datoteku" Click="OpenSnapshot_Click"/><Button Style="{StaticResource SecondaryButton}" Content="Otvori mapu" Click="OpenSnapshotFolder_Click"/><Button Style="{StaticResource SecondaryButton}" Content="Vrati ovu verziju" Click="RestoreSnapshot_Click"/></StackPanel></Border>
                             </Grid>
-                        </Grid>
+                            </Grid>
+                        </ScrollViewer>
 
                         <!-- PRICE HISTORY -->
-                        <Grid x:Name="PricesPanel" Visibility="Collapsed">
+                        <ScrollViewer x:Name="PricesPanel" Visibility="Collapsed" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                            <Grid x:Name="PricesLayoutGrid" MinHeight="620">
                             <Grid.RowDefinitions><RowDefinition Height="98"/><RowDefinition Height="250"/><RowDefinition Height="48"/><RowDefinition Height="*"/></Grid.RowDefinitions>
                             <Grid Grid.Row="0" Margin="0,0,0,9"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/><ColumnDefinition/></Grid.ColumnDefinitions>
                                 <Border Grid.Column="0" Style="{StaticResource CardBorder}" Background="{StaticResource GreenCardGradient}" Margin="0,0,8,0" Padding="13"><StackPanel><TextBlock Text="Ukupno povećanja" Foreground="{StaticResource MutedBrush}"/><TextBlock x:Name="PriceIncreaseText" Text="0" FontSize="27" FontWeight="Bold" Foreground="#C7FFE7"/></StackPanel></Border>
@@ -693,7 +698,8 @@
                             <DataGrid Grid.Row="3" x:Name="PriceHistoryGrid" IsReadOnly="True" SelectionMode="Single" Margin="0,5,0,0">
                                 <DataGrid.Columns><DataGridTextColumn Header="Datum" Binding="{Binding ChangedAt, StringFormat={}{0:dd.MM.yyyy HH:mm}}" Width="145"/><DataGridTextColumn Header="Stavka" Binding="{Binding EntityName}" Width="1.6*"/><DataGridTextColumn Header="Vrsta" Binding="{Binding EntityType}" Width="80"/><DataGridTextColumn Header="Izvor" Binding="{Binding SourceDisplay}" Width="85"/><DataGridTextColumn Header="Stara cijena" Binding="{Binding OldRetailPrice, StringFormat={}{0:N2} €}" Width="105"/><DataGridTextColumn Header="Nova cijena" Binding="{Binding NewRetailPrice, StringFormat={}{0:N2} €}" Width="105"/><DataGridTextColumn Header="Napomena" Binding="{Binding Note}" Width="1.4*"/></DataGrid.Columns>
                             </DataGrid>
-                        </Grid>
+                            </Grid>
+                        </ScrollViewer>
 
                         <!-- AUDIT -->
                         <Grid x:Name="AuditPanel" Visibility="Collapsed">
