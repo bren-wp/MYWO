@@ -78,7 +78,7 @@ public partial class MainWindow : Window
     {
         if (_companyId == 0) return;
         var settings = AppDb.GetCompanySettings(_companyId);
-        var defaultFolder = Path.Combine(AppPaths.DefaultPublishRoot, SafeFolderName(AppDb.GetCompany(_companyId).Name));
+        var defaultFolder = System.IO.Path.Combine(AppPaths.DefaultPublishRoot, SafeFolderName(AppDb.GetCompany(_companyId).Name));
 
         PublishFolder.Text = string.IsNullOrWhiteSpace(settings.PublishFolder) ? defaultFolder : settings.PublishFolder;
         OnlyActivePublishCheck.IsChecked = settings.OnlyActiveOnPublish;
@@ -279,7 +279,7 @@ public partial class MainWindow : Window
             HistoryDetailsName.Text = "Odaberite objavu";
             HistoryDetailsDate.Text = "";
             HistoryDetailsHash.Text = "";
-            HistoryDetailsPath.Text = "—";
+            HistoryDetailsSystem.IO.Path.Text = "—";
             HistoryDetailsCount.Text = "0 stavki";
             return;
         }
@@ -287,7 +287,7 @@ public partial class MainWindow : Window
         HistoryDetailsName.Text = snapshot.FileName;
         HistoryDetailsDate.Text = $"Objavljeno {snapshot.CreatedAt.ToLocalTime():dd.MM.yyyy. 'u' HH:mm}";
         HistoryDetailsHash.Text = $"SHA-256  {snapshot.Sha256}";
-        HistoryDetailsPath.Text = string.IsNullOrWhiteSpace(snapshot.FullPath) ? snapshot.FileName : snapshot.FullPath;
+        HistoryDetailsSystem.IO.Path.Text = string.IsNullOrWhiteSpace(snapshot.FullPath) ? snapshot.FileName : snapshot.FullPath;
         HistoryDetailsCount.Text = $"{snapshot.ItemCount:N0} stavki • {snapshot.Format}";
     }
 
@@ -455,7 +455,7 @@ public partial class MainWindow : Window
             var folder = PublishFolder.Text?.Trim() ?? "";
             if (_publishPreviewMode == "xml")
             {
-                var xml = string.IsNullOrWhiteSpace(folder) ? "" : Path.Combine(folder, "cjenik.xml");
+                var xml = string.IsNullOrWhiteSpace(folder) ? "" : System.IO.Path.Combine(folder, "cjenik.xml");
                 if (!string.IsNullOrWhiteSpace(xml) && File.Exists(xml))
                 {
                     var text = File.ReadAllText(xml);
@@ -471,7 +471,7 @@ public partial class MainWindow : Window
 
             if (_publishPreviewMode == "csv")
             {
-                var csv = string.IsNullOrWhiteSpace(folder) ? "" : Path.Combine(folder, "cjenik.csv");
+                var csv = string.IsNullOrWhiteSpace(folder) ? "" : System.IO.Path.Combine(folder, "cjenik.csv");
                 if (!string.IsNullOrWhiteSpace(csv) && File.Exists(csv))
                 {
                     PublishPreviewText.Text = LimitPreview(File.ReadAllText(csv));
@@ -582,18 +582,18 @@ public partial class MainWindow : Window
 
         (string title, string subtitle, FrameworkElement panel) = key switch
         {
-            "products" => ("Proizvodi", "Upravljajte svojim asortimanom proizvoda. Dodajte, uređujte i organizirajte proizvode.", ProductsPanel),
-            "services" => ("Usluge", "Upravljajte svojim uslugama, cijenama i oblicima prodaje.", ServicesPanel),
-            "categories" => ("Kategorije i brendovi", "Upravljajte kategorijama i brendovima svojih proizvoda i usluga.", CategoriesPanel),
-            "brands" => ("Brendovi", "Organizirajte brendove unutar aktivne tvrtke.", BrandsPanel),
-            "publish" => ("Objava", "Objavite svoje cjenike u datoteke ili putem API-ja. Brzo, sigurno i uvijek ažurirano.", PublishPanel),
-            "api" => ("API ključevi", "Siguran pristup vašim podacima putem API-ja. Upravljajte ključevima i pratite korištenje.", ApiPanel),
-            "history" => ("Arhiva", "Povijest svih objava cjenika i povezanih datoteka.", HistoryPanel),
-            "prices" => ("Promjene cijena", "Analizirajte sve promjene cijena i pratite trendove kroz vrijeme.", PricesPanel),
-            "audit" => ("Administracija", "Upravljajte sustavom, tvrtkama i postavkama na jednom mjestu.", AuditPanel),
-            "companies" => ("Administracija", "Upravljajte sustavom, tvrtkama i postavkama na jednom mjestu.", CompaniesPanel),
-            "settings" => ("Administracija", "Upravljajte sustavom, tvrtkama i postavkama na jednom mjestu.", SettingsPanel),
-            _ => ("Pregled", "Dobro došli natrag! Evo kratkog pregleda stanja vaših cjenika.", DashboardPanel)
+            "products" => ("Proizvodi", "Upravljajte svojim asortimanom proizvoda. Dodajte, uređujte i organizirajte proizvode.", (FrameworkElement)ProductsPanel),
+            "services" => ("Usluge", "Upravljajte svojim uslugama, cijenama i oblicima prodaje.", (FrameworkElement)ServicesPanel),
+            "categories" => ("Kategorije i brendovi", "Upravljajte kategorijama i brendovima svojih proizvoda i usluga.", (FrameworkElement)CategoriesPanel),
+            "brands" => ("Brendovi", "Organizirajte brendove unutar aktivne tvrtke.", (FrameworkElement)BrandsPanel),
+            "publish" => ("Objava", "Objavite svoje cjenike u datoteke ili putem API-ja. Brzo, sigurno i uvijek ažurirano.", (FrameworkElement)PublishPanel),
+            "api" => ("API ključevi", "Siguran pristup vašim podacima putem API-ja. Upravljajte ključevima i pratite korištenje.", (FrameworkElement)ApiPanel),
+            "history" => ("Arhiva", "Povijest svih objava cjenika i povezanih datoteka.", (FrameworkElement)HistoryPanel),
+            "prices" => ("Promjene cijena", "Analizirajte sve promjene cijena i pratite trendove kroz vrijeme.", (FrameworkElement)PricesPanel),
+            "audit" => ("Administracija", "Upravljajte sustavom, tvrtkama i postavkama na jednom mjestu.", (FrameworkElement)AuditPanel),
+            "companies" => ("Administracija", "Upravljajte sustavom, tvrtkama i postavkama na jednom mjestu.", (FrameworkElement)CompaniesPanel),
+            "settings" => ("Administracija", "Upravljajte sustavom, tvrtkama i postavkama na jednom mjestu.", (FrameworkElement)SettingsPanel),
+            _ => ("Pregled", "Dobro došli natrag! Evo kratkog pregleda stanja vaših cjenika.", (FrameworkElement)DashboardPanel)
         };
 
         PageTitle.Text = title;
@@ -1357,7 +1357,7 @@ public partial class MainWindow : Window
     private void OpenSnapshotFolder_Click(object sender, RoutedEventArgs e)
     {
         if (HistoryGrid.SelectedItem is not PublicationSnapshot snapshot) return;
-        var folder = Path.GetDirectoryName(snapshot.FullPath);
+        var folder = System.IO.Path.GetDirectoryName(snapshot.FullPath);
         if (string.IsNullOrWhiteSpace(folder) || !Directory.Exists(folder))
         {
             MessageBox.Show("Mapa više ne postoji na zabilježenoj lokaciji.", "MYWO", MessageBoxButton.OK, MessageBoxImage.Warning);
@@ -1379,7 +1379,7 @@ public partial class MainWindow : Window
 
             var restoredPath = ExportService.RestoreSnapshot(snapshot, folder);
             AppDb.WriteAudit(_companyId, "restore_publication", "publication_snapshot", snapshot.Id,
-                $"Vraćena verzija {snapshot.FileName} kao {Path.GetFileName(restoredPath)}.");
+                $"Vraćena verzija {snapshot.FileName} kao {System.IO.Path.GetFileName(restoredPath)}.");
             Notify("Verzija cjenika vraćena", $"{snapshot.FileName} je vraćen kao aktivna {snapshot.Format.ToUpperInvariant()} datoteka.", "success");
             Status($"Vraćena objava: {snapshot.FileName}");
             RefreshAll();
@@ -1401,17 +1401,17 @@ public partial class MainWindow : Window
 
         try
         {
-            var extension = Path.GetExtension(dialog.FileName).ToLowerInvariant();
+            var extension = System.IO.Path.GetExtension(dialog.FileName).ToLowerInvariant();
             if (extension is not ".png" and not ".jpg" and not ".jpeg" and not ".webp")
                 throw new InvalidOperationException("Podržani formati slike su PNG, JPG, JPEG i WEBP.");
             var info = new FileInfo(dialog.FileName);
             if (info.Length > 10 * 1024 * 1024)
                 throw new InvalidOperationException("Slika proizvoda ne smije biti veća od 10 MB.");
 
-            var root = Path.Combine(Path.GetDirectoryName(AppDb.DatabasePath) ?? AppContext.BaseDirectory,
+            var root = System.IO.Path.Combine(System.IO.Path.GetDirectoryName(AppDb.DatabasePath) ?? AppContext.BaseDirectory,
                 "media", $"company-{_companyId}", "products");
             Directory.CreateDirectory(root);
-            var target = Path.Combine(root, $"{Guid.NewGuid():N}{extension}");
+            var target = System.IO.Path.Combine(root, $"{Guid.NewGuid():N}{extension}");
             File.Copy(dialog.FileName, target, true);
             _editingProduct.ImagePath = target;
             ProductDrawerImagePathText.Text = target;
@@ -1579,7 +1579,7 @@ public partial class MainWindow : Window
                 var folder = settings.PublishFolder;
                 if (string.IsNullOrWhiteSpace(folder))
                 {
-                    folder = Path.Combine(
+                    folder = System.IO.Path.Combine(
                         Environment.GetFolderPath(Environment.SpecialFolder.MyDocuments),
                         "MYWO", "Objave", SafeFolderName(company.Name));
                 }
@@ -1674,7 +1674,7 @@ public partial class MainWindow : Window
     {
         try
         {
-            var updater = Path.Combine(AppContext.BaseDirectory, "MYWO-Update.exe");
+            var updater = System.IO.Path.Combine(AppContext.BaseDirectory, "MYWO-Update.exe");
             if (!File.Exists(updater))
             {
                 MessageBox.Show(
@@ -1689,7 +1689,7 @@ public partial class MainWindow : Window
         }
         catch (Exception ex)
         {
-            HandleError(ex);
+            Error(ex);
         }
     }
 
@@ -1706,7 +1706,7 @@ public partial class MainWindow : Window
         {
             var path = BackupService.CreateBackup(dialog.FileName);
             Status("Sigurnosna kopija je izrađena.");
-            Notify("Sigurnosna kopija izrađena", $"Backup je spremljen kao {Path.GetFileName(path)}.", "success");
+            Notify("Sigurnosna kopija izrađena", $"Backup je spremljen kao {System.IO.Path.GetFileName(path)}.", "success");
             MessageBox.Show($"Sigurnosna kopija je spremljena:\n\n{path}", "MYWO", MessageBoxButton.OK, MessageBoxImage.Information);
         }
         catch (Exception ex) { Error(ex); }
@@ -2011,7 +2011,7 @@ public partial class MainWindow : Window
 
     private static string SafeFolderName(string value)
     {
-        var invalid = Path.GetInvalidFileNameChars();
+        var invalid = System.IO.Path.GetInvalidFileNameChars();
         var chars = value.Select(c => invalid.Contains(c) ? '_' : c).ToArray();
         return new string(chars).Trim();
     }
