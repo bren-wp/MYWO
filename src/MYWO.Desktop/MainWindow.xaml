@@ -242,15 +242,16 @@
                                     </Border>
                                 </UniformGrid>
 
-                                <Grid Height="290">
-                                    <Grid.ColumnDefinitions><ColumnDefinition Width="1.65*"/><ColumnDefinition Width="1*"/></Grid.ColumnDefinitions>
-                                    <Border Grid.Column="0" Style="{StaticResource CardBorder}" Margin="0,0,9,0" Padding="16">
+                                <Grid x:Name="DashboardMainGrid" Height="290">
+                                    <Grid.ColumnDefinitions><ColumnDefinition x:Name="DashboardChartColumn" Width="1.65*"/><ColumnDefinition x:Name="DashboardHistoryColumn" Width="1*"/></Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions><RowDefinition x:Name="DashboardMainPrimaryRow" Height="*"/><RowDefinition x:Name="DashboardMainSecondaryRow" Height="0"/></Grid.RowDefinitions>
+                                    <Border x:Name="DashboardChartCard" Grid.Column="0" Style="{StaticResource CardBorder}" Margin="0,0,9,0" Padding="16">
                                         <Grid><Grid.RowDefinitions><RowDefinition Height="42"/><RowDefinition Height="*"/></Grid.RowDefinitions>
                                             <DockPanel Grid.Row="0"><TextBlock Text="Promjene cijena u zadnjih 30 dana" Style="{StaticResource SectionTitle}"/><Border DockPanel.Dock="Right" Background="#11243A" BorderBrush="#24425F" BorderThickness="1" CornerRadius="7" Padding="9,5"><TextBlock Text="Zadnjih 30 dana" Foreground="{StaticResource MutedBrush}" FontSize="10"/></Border></DockPanel>
                                             <Canvas x:Name="DashboardPriceChartCanvas" Grid.Row="1" Background="#081421" SizeChanged="PriceChartCanvas_SizeChanged" ClipToBounds="True"/>
                                         </Grid>
                                     </Border>
-                                    <Border Grid.Column="1" Style="{StaticResource CardBorder}" Padding="14">
+                                    <Border x:Name="DashboardHistoryCard" Grid.Column="1" Style="{StaticResource CardBorder}" Padding="14">
                                         <Grid><Grid.RowDefinitions><RowDefinition Height="38"/><RowDefinition Height="*"/></Grid.RowDefinitions>
                                             <DockPanel><TextBlock Text="Povijest objava" Style="{StaticResource SectionTitle}"/><Button DockPanel.Dock="Right" Style="{StaticResource GhostButton}" Content="Prikaži sve →" Tag="history" Click="Nav_Click"/></DockPanel>
                                             <DataGrid x:Name="DashboardHistoryGrid" Grid.Row="1" IsReadOnly="True" HeadersVisibility="None" BorderThickness="0" RowHeight="39" SelectionMode="Single">
@@ -264,9 +265,10 @@
                                     </Border>
                                 </Grid>
 
-                                <Grid Margin="0,10,0,0" Height="218">
+                                <Grid x:Name="DashboardSummaryGrid" Margin="0,10,0,0" Height="218">
                                     <Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition/><ColumnDefinition Width="0.9*"/></Grid.ColumnDefinitions>
-                                    <Border Grid.Column="0" Style="{StaticResource CardBorder}" Margin="0,0,8,0" Padding="14">
+                                    <Grid.RowDefinitions><RowDefinition x:Name="DashboardSummaryPrimaryRow" Height="*"/><RowDefinition x:Name="DashboardSummarySecondaryRow" Height="0"/></Grid.RowDefinitions>
+                                    <Border x:Name="DashboardQuickDataCard" Grid.Column="0" Style="{StaticResource CardBorder}" Margin="0,0,8,0" Padding="14">
                                         <StackPanel>
                                             <TextBlock Text="Brzi podaci" Style="{StaticResource SectionTitle}"/>
                                             <DockPanel Margin="0,11,0,0"><TextBlock Text="Neaktivni proizvodi" Foreground="{StaticResource MutedBrush}"/><TextBlock x:Name="QuickInactiveProductsText" Text="0" DockPanel.Dock="Right"/></DockPanel>
@@ -275,7 +277,7 @@
                                             <DockPanel Margin="0,10,0,0"><TextBlock Text="Aktivni API ključevi" Foreground="{StaticResource MutedBrush}"/><TextBlock x:Name="QuickApiText" Text="0" DockPanel.Dock="Right"/></DockPanel>
                                         </StackPanel>
                                     </Border>
-                                    <Border Grid.Column="1" Style="{StaticResource CardBorder}" Margin="0,0,8,0" Padding="14">
+                                    <Border x:Name="DashboardQuickActionsCard" Grid.Column="1" Style="{StaticResource CardBorder}" Margin="0,0,8,0" Padding="14">
                                         <StackPanel>
                                             <TextBlock Text="Brze akcije" Style="{StaticResource SectionTitle}"/>
                                             <UniformGrid Columns="2" Margin="0,8,0,0">
@@ -286,7 +288,7 @@
                                             </UniformGrid>
                                         </StackPanel>
                                     </Border>
-                                    <Border Grid.Column="2" Style="{StaticResource CardBorder}" Background="{StaticResource BlueCardGradient}" Padding="17">
+                                    <Border x:Name="DashboardPromoCard" Grid.Column="2" Style="{StaticResource CardBorder}" Background="{StaticResource BlueCardGradient}" Padding="17">
                                         <StackPanel>
                                             <TextBlock Text="Vaši cjenici." FontSize="20" FontWeight="SemiBold"/>
                                             <TextBlock Text="Veća mogućnost." FontSize="20" FontWeight="SemiBold" Foreground="#8DD7FF"/>
@@ -302,9 +304,10 @@
                         <Grid x:Name="ProductsPanel" Visibility="Collapsed">
                             <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
                             <Grid Grid.Row="0" Margin="0,0,0,10">
-                                <Grid.RowDefinitions><RowDefinition Height="47"/><RowDefinition Height="Auto"/><RowDefinition Height="40"/></Grid.RowDefinitions>
-                                <Grid Grid.Row="0">
+                                <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/><RowDefinition Height="40"/></Grid.RowDefinitions>
+                                <Grid x:Name="ProductFilterGrid" Grid.Row="0" Height="47">
                                     <Grid.ColumnDefinitions><ColumnDefinition Width="2*"/><ColumnDefinition Width="0.95*"/><ColumnDefinition Width="1.05*"/><ColumnDefinition Width="1.15*"/><ColumnDefinition Width="1.05*"/><ColumnDefinition Width="1.1*"/></Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions><RowDefinition Height="*"/><RowDefinition Height="0"/></Grid.RowDefinitions>
                                     <TextBox x:Name="ProductSearch" Grid.Column="0" Style="{StaticResource SearchBox}" TextChanged="ProductFilter_Changed" ToolTip="Pretraži proizvode…"/>
                                     <ComboBox x:Name="ProductStatusFilter" Grid.Column="1" SelectionChanged="ProductFilter_Changed" Margin="8,3,0,3">
                                         <ComboBoxItem Content="Svi statusi" Tag="all" IsSelected="True"/><ComboBoxItem Content="Aktivni" Tag="active"/><ComboBoxItem Content="Neaktivni" Tag="inactive"/>
@@ -314,7 +317,7 @@
                                     </ComboBox>
                                     <ComboBox x:Name="ProductCategoryFilter" Grid.Column="3" DisplayMemberPath="Name" SelectedValuePath="Id" SelectionChanged="ProductFilter_Changed" Margin="8,3,0,3"/>
                                     <ComboBox x:Name="ProductBrandFilter" Grid.Column="4" DisplayMemberPath="Name" SelectedValuePath="Id" SelectionChanged="ProductFilter_Changed" Margin="8,3,0,3"/>
-                                    <Border Grid.Column="5" Background="#0D1D30" BorderBrush="#23415F" BorderThickness="1" CornerRadius="8" Margin="8,3,0,3" Padding="12,0">
+                                    <Border x:Name="ProductMoreFiltersBorder" Grid.Column="5" Background="#0D1D30" BorderBrush="#23415F" BorderThickness="1" CornerRadius="8" Margin="8,3,0,3" Padding="12,0">
                                         <StackPanel Orientation="Horizontal" VerticalAlignment="Center"><TextBlock Style="{StaticResource IconText}" Text="&#xE71C;" FontSize="14"/><TextBlock Text="Više filtera" Margin="8,0,0,0" Foreground="{StaticResource MutedBrush}" VerticalAlignment="Center"/></StackPanel>
                                     </Border>
                                 </Grid>
@@ -344,9 +347,9 @@
                                     <DataGridTemplateColumn Header="Status" Width="86"><DataGridTemplateColumn.CellTemplate><DataTemplate><Border Style="{StaticResource StatusPillBorder}" HorizontalAlignment="Left"><TextBlock Style="{StaticResource StatusPillText}"/></Border></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn>
                                 </DataGrid.Columns>
                             </DataGrid>
-                            <DockPanel Grid.Row="2" LastChildFill="False" Margin="0,6,0,0">
-                                <TextBlock x:Name="ProductsCountText" Text="0 stavki" Foreground="{StaticResource MutedBrush}" VerticalAlignment="Center"/>
-                                <WrapPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right">
+                            <DockPanel Grid.Row="2" LastChildFill="True" Margin="0,6,0,0">
+                                <TextBlock x:Name="ProductsCountText" DockPanel.Dock="Left" Text="0 stavki" Foreground="{StaticResource MutedBrush}" VerticalAlignment="Center" Margin="0,0,8,0"/>
+                                <WrapPanel Orientation="Horizontal" HorizontalAlignment="Right">
                                     <Button Style="{StaticResource SecondaryButton}" Content="Dupliciraj" Click="DuplicateProduct_Click"/>
                                     <Button Style="{StaticResource SecondaryButton}" Content="Uredi" Click="EditProduct_Click"/>
                                     <Button Style="{StaticResource SecondaryButton}" Content="Aktiviraj" Click="ActivateProducts_Click"/>
@@ -417,15 +420,16 @@
                         <Grid x:Name="ServicesPanel" Visibility="Collapsed">
                             <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="*"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
                             <Grid Grid.Row="0" Margin="0,0,0,10">
-                                <Grid.RowDefinitions><RowDefinition Height="47"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
-                                <Grid Grid.Row="0">
-                                    <Grid.ColumnDefinitions><ColumnDefinition Width="2*"/><ColumnDefinition Width="1.15*"/><ColumnDefinition Width="1*"/><ColumnDefinition Width="1.1*"/><ColumnDefinition Width="0.7*"/></Grid.ColumnDefinitions>
+                                <Grid.RowDefinitions><RowDefinition Height="Auto"/><RowDefinition Height="Auto"/></Grid.RowDefinitions>
+                                <Grid x:Name="ServiceFilterGrid" Grid.Row="0" Height="47">
+                                    <Grid.ColumnDefinitions><ColumnDefinition Width="2*"/><ColumnDefinition Width="1.15*"/><ColumnDefinition Width="1*"/><ColumnDefinition Width="1.1*"/></Grid.ColumnDefinitions>
+                                    <Grid.RowDefinitions><RowDefinition Height="*"/><RowDefinition Height="0"/></Grid.RowDefinitions>
                                     <TextBox x:Name="ServiceSearch" Grid.Column="0" Style="{StaticResource SearchBox}" TextChanged="ServiceFilter_Changed" ToolTip="Pretraži usluge…"/>
                                     <ComboBox x:Name="ServiceCategoryFilter" Grid.Column="1" DisplayMemberPath="Name" SelectedValuePath="Id" SelectionChanged="ServiceFilter_Changed" Margin="8,3,0,3"/>
                                     <ComboBox x:Name="ServiceStatusFilter" Grid.Column="2" SelectionChanged="ServiceFilter_Changed" Margin="8,3,0,3">
                                         <ComboBoxItem Content="Svi statusi" Tag="all" IsSelected="True"/><ComboBoxItem Content="Aktivne" Tag="active"/><ComboBoxItem Content="Neaktivne" Tag="inactive"/>
                                     </ComboBox>
-                                    <Border Grid.Column="3" Background="#0D1D30" BorderBrush="#23415F" BorderThickness="1" CornerRadius="8" Margin="8,3,0,3" Padding="12,0"><StackPanel Orientation="Horizontal" VerticalAlignment="Center"><TextBlock Style="{StaticResource IconText}" Text="&#xE71C;" FontSize="14"/><TextBlock Text="Najnovije" Margin="8,0,0,0" Foreground="{StaticResource MutedBrush}"/></StackPanel></Border>
+                                    <Border x:Name="ServiceSortBorder" Grid.Column="3" Background="#0D1D30" BorderBrush="#23415F" BorderThickness="1" CornerRadius="8" Margin="8,3,0,3" Padding="12,0"><StackPanel Orientation="Horizontal" VerticalAlignment="Center"><TextBlock Style="{StaticResource IconText}" Text="&#xE71C;" FontSize="14"/><TextBlock Text="Najnovije" Margin="8,0,0,0" Foreground="{StaticResource MutedBrush}"/></StackPanel></Border>
                                 </Grid>
                                 <WrapPanel Grid.Row="1" Orientation="Horizontal" VerticalAlignment="Center">
                                     <Button Style="{StaticResource PrimaryButton}" Content="＋  Dodaj uslugu" Click="NewService_Click" Margin="0,3,8,3"/>
@@ -446,8 +450,8 @@
                                     <DataGridTextColumn Header="Zadnja izmjena" Binding="{Binding UpdatedAt, StringFormat={}{0:dd.MM.yyyy HH:mm}}" Width="135"/>
                                 </DataGrid.Columns>
                             </DataGrid>
-                            <DockPanel Grid.Row="2" LastChildFill="False" Margin="0,6,0,0">
-                                <WrapPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right">
+                            <DockPanel Grid.Row="2" LastChildFill="True" Margin="0,6,0,0">
+                                <WrapPanel Orientation="Horizontal" HorizontalAlignment="Right">
                                     <Button Style="{StaticResource SecondaryButton}" Content="Dupliciraj" Click="DuplicateService_Click"/>
                                     <Button Style="{StaticResource SecondaryButton}" Content="Uredi" Click="EditService_Click"/>
                                     <Button Style="{StaticResource SecondaryButton}" Content="Aktiviraj" Click="ActivateServices_Click"/>
