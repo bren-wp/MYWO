@@ -7,7 +7,7 @@ namespace MYWO.Setup;
 
 internal static class Program
 {
-    private static readonly string Version = typeof(Program).Assembly.GetName().Version?.ToString(3) ?? "0.9.0";
+    private static readonly string Version = typeof(Program).Assembly.GetName().Version?.ToString(3) ?? "0.9.3";
     private const string UninstallKey = @"Software\Microsoft\Windows\CurrentVersion\Uninstall\MYWO";
 
     [STAThread]
