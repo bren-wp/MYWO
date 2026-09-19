@@ -1,5 +1,5 @@
 param(
-    [string]$Version = "0.9.0"
+    [string]$Version = "0.9.1"
 )
 
 $ErrorActionPreference = "Stop"
@@ -93,6 +93,13 @@ foreach ($item in $sourceItems) {
 $embeddedPayload = Join-Path $sourceStage "src\MYWO.Setup\Payload\payload.zip"
 if (Test-Path $embeddedPayload) { Remove-Item $embeddedPayload -Force }
 New-Item -ItemType File -Path $embeddedPayload -Force | Out-Null
+
+# Reproducible build outputs do not belong in the source archive.
+Get-ChildItem $sourceStage -Directory -Recurse -Force |
+    Where-Object { $_.Name -in @("bin", "obj", "dist", ".release-stage") } |
+    Sort-Object FullName -Descending |
+    Remove-Item -Recurse -Force
+
 Compress-Archive -Path (Join-Path $sourceStage "*") -DestinationPath (Join-Path $dist "MYWO-$Version-source.zip") -CompressionLevel Optimal -Force
 
 Write-Host "[8/9] Writing release checksums..."
