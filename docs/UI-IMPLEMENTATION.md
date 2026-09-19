@@ -1,4 +1,4 @@
-# MYWO UI implementation map – v0.9.0
+# MYWO UI implementation map – v0.9.1
 
 Ovaj dokument opisuje kako su referentni MYWO ekrani preneseni u stvarni WPF UI.
 
