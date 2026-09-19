@@ -1,0 +1,89 @@
+name: MYWO v0.6 Windows Build
+
+on:
+  push:
+    branches:
+      - 'chatgpt/mywo-v0.6'
+  pull_request:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  windows-release:
+    runs-on: windows-latest
+    timeout-minutes: 35
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Reconstruct source
+        shell: pwsh
+        run: |
+          $parts = Get-ChildItem .build\src.part* | Sort-Object Name
+          if ($parts.Count -ne 6) { throw "Expected 6 source parts, found $($parts.Count)." }
+          $b64 = ($parts | ForEach-Object { Get-Content $_.FullName -Raw }) -join ''
+          [IO.File]::WriteAllBytes('mywo-build-min.tar.xz', [Convert]::FromBase64String($b64))
+          tar.exe -xJf mywo-build-min.tar.xz
+          if (-not (Test-Path '.\MYWO.sln')) { throw 'Source reconstruction failed: MYWO.sln missing.' }
+
+      - name: Setup .NET 10
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Validate source
+        shell: pwsh
+        run: .\scripts\validate-source.ps1
+
+      - name: Build release
+        shell: pwsh
+        run: .\scripts\build-release.ps1 -Version 0.6.0
+
+      - name: Portable runtime smoke test
+        shell: pwsh
+        run: |
+          $test = Join-Path $env:RUNNER_TEMP 'mywo-portable-smoke'
+          New-Item -ItemType Directory -Path $test -Force | Out-Null
+          Copy-Item .\dist\MYWO-Portable.exe (Join-Path $test 'MYWO-Portable.exe')
+          $p = Start-Process (Join-Path $test 'MYWO-Portable.exe') -PassThru
+          Start-Sleep -Seconds 6
+          if ($p.HasExited) { throw "Portable app exited during smoke test with code $($p.ExitCode)." }
+          if (-not (Test-Path (Join-Path $test 'MYWO-Data\mywo.db'))) { throw 'Portable mode did not create MYWO-Data\mywo.db.' }
+          Stop-Process -Id $p.Id -Force
+
+      - name: Setup and integrated uninstall smoke test
+        shell: pwsh
+        run: |
+          .\dist\MYWO-Setup.exe --silent
+          Start-Sleep -Seconds 3
+          $install = Join-Path $env:LOCALAPPDATA 'Programs\MYWO'
+          if (-not (Test-Path (Join-Path $install 'MYWO.exe'))) { throw 'Installed MYWO.exe is missing.' }
+          if (-not (Test-Path (Join-Path $install 'MYWO-Update.exe'))) { throw 'Installed MYWO-Update.exe is missing.' }
+          if (Test-Path (Join-Path $install 'uninstall.exe')) { throw 'Standalone uninstall.exe must not be shipped.' }
+          if (Get-ChildItem $install -Filter 'unins*.exe' -ErrorAction SilentlyContinue) { throw 'Inno-style standalone uninstaller must not be shipped.' }
+          $key = Get-ItemProperty 'HKCU:\Software\Microsoft\Windows\CurrentVersion\Uninstall\MYWO'
+          if ($key.UninstallString -notmatch 'MYWO-Update\.exe.*--uninstall') { throw 'Integrated uninstall command is not registered correctly.' }
+          & (Join-Path $install 'MYWO-Update.exe') --uninstall --quiet
+          Start-Sleep -Seconds 5
+          if (Test-Path $install) { throw 'Integrated uninstall did not remove the installation directory.' }
+
+      - name: Validate release artifacts
+        shell: pwsh
+        run: |
+          foreach ($name in @('MYWO-Setup.exe','MYWO-Portable.exe','MYWO-Update.exe','update.json','SHA256SUMS.txt')) {
+            $path = Join-Path '.\dist' $name
+            if (-not (Test-Path $path)) { throw "Missing $name" }
+            Write-Host "$name -> $((Get-Item $path).Length) bytes"
+          }
+
+      - name: Upload Windows release
+        uses: actions/upload-artifact@v4
+        with:
+          name: MYWO-0.6.0-Windows
+          path: dist/*
+          if-no-files-found: error
+          retention-days: 14
