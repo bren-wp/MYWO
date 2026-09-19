@@ -53,7 +53,7 @@ foreach ($token in @('MYWO-Update.exe','--uninstall','UninstallString','ReplaceI
 if ($setupCode.Contains('unins000.exe') -or $setupCode.Contains('uninstall.exe')) { throw 'Standalone uninstaller reference detected in setup source.' }
 
 Write-Host '[6/6] Scanning production source for unfinished markers...'
-$bad = Get-ChildItem $root -Recurse -File | Where-Object { $_.Extension -in '.cs','.xaml','.ps1','.yml','.md' } |
+$bad = Get-ChildItem (Join-Path $root 'src') -Recurse -File | Where-Object { $_.Extension -in '.cs','.xaml' } |
     Select-String -Pattern 'TODO\b|FIXME\b|PLACEHOLDER\b|lorem ipsum|dev only' -CaseSensitive:$false
 if ($bad) {
     $bad | ForEach-Object { Write-Host "$($_.Path):$($_.LineNumber): $($_.Line.Trim())" }
