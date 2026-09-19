@@ -35,19 +35,33 @@ public partial class MainWindow : Window
     public MainWindow()
     {
         InitializeComponent();
+        WindowStateService.Restore(this);
         SourceInitialized += (_, _) => ApplyWindows11Chrome();
+        DpiChanged += (_, _) => Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(ReflowForEnvironment));
+        SystemEvents.DisplaySettingsChanged += DisplaySettingsChanged;
+        Closing += (_, _) => WindowStateService.Save(this);
+        Closed += (_, _) => SystemEvents.DisplaySettingsChanged -= DisplaySettingsChanged;
         DatabasePathText.Text = $"Baza: {AppDb.DatabasePath}";
-        var appVersion = typeof(MainWindow).Assembly.GetName().Version?.ToString(3) ?? "0.9.3";
+        var appVersion = typeof(MainWindow).Assembly.GetName().Version?.ToString(3) ?? "0.9.4";
         ReleaseModeText.Text = $"MYWO v{appVersion} • {(AppPaths.IsPortable ? "Portable" : "Instalirana verzija")}";
         SidebarVersionText.Text = $"MYWO v{appVersion}";
         _scheduleTimer.Tick += ScheduleTimer_Tick;
         _scheduleTimer.Start();
         LoadCompanies();
         Show("dashboard");
-        Loaded += (_, _) => ApplyResponsiveLayout();
+        Loaded += (_, _) => ReflowForEnvironment();
     }
 
     private void Window_SizeChanged(object sender, SizeChangedEventArgs e) => ApplyResponsiveLayout();
+
+    private void DisplaySettingsChanged(object? sender, EventArgs e)
+        => Dispatcher.BeginInvoke(DispatcherPriority.Loaded, new Action(ReflowForEnvironment));
+
+    private void ReflowForEnvironment()
+    {
+        App.FitWindowToCurrentWorkArea(this);
+        ApplyResponsiveLayout();
+    }
 
     private void ApplyResponsiveLayout()
     {
@@ -56,13 +70,16 @@ public partial class MainWindow : Window
 
         var compact = width < 1180;
         var narrow = width < 1000;
-        var shortWindow = ActualHeight > 0 && ActualHeight < 760;
+        var ultraNarrow = width < 760;
+        var height = ActualHeight > 0 ? ActualHeight : Height;
+        var shortWindow = height > 0 && height < 760;
+        var veryShort = height > 0 && height < 650;
 
-        SidebarLogoRow.Height = new GridLength(shortWindow ? 66 : 82);
-        MainToolbarRow.Height = new GridLength(shortWindow ? 60 : 68);
-        PageHeaderRow.Height = new GridLength(shortWindow ? 54 : 64);
+        SidebarLogoRow.Height = new GridLength(veryShort ? 54 : shortWindow ? 66 : 82);
+        MainToolbarRow.Height = new GridLength(veryShort ? 54 : shortWindow ? 60 : 68);
+        PageHeaderRow.Height = new GridLength(veryShort ? 46 : shortWindow ? 54 : 64);
 
-        SidebarColumn.Width = new GridLength(compact ? (narrow ? 68 : 76) : 214);
+        SidebarColumn.Width = new GridLength(ultraNarrow ? 58 : compact ? (narrow ? 68 : 76) : 214);
         SidebarBrandText.Visibility = compact ? Visibility.Collapsed : Visibility.Visible;
         SidebarPromoCard.Visibility = compact || shortWindow ? Visibility.Collapsed : Visibility.Visible;
         SidebarFooterRow.Height = new GridLength(compact || shortWindow ? 38 : 116);
@@ -83,24 +100,28 @@ public partial class MainWindow : Window
             }
         }
 
-        TopbarCompanyColumn.Width = new GridLength(compact ? (narrow ? 142 : 170) : 225);
-        TopbarActionsColumn.Width = new GridLength(compact ? 94 : 270);
+        TopbarCompanyColumn.Width = new GridLength(ultraNarrow ? 0 : compact ? (narrow ? 142 : 170) : 225);
+        TopbarActionsColumn.Width = new GridLength(ultraNarrow ? 86 : compact ? 94 : 270);
+        CompanyCombo.Visibility = ultraNarrow ? Visibility.Collapsed : Visibility.Visible;
         CompanyCombo.Width = compact ? (narrow ? 128 : 150) : 190;
         GlobalSearchContainer.Width = double.NaN;
+        GlobalSearchContainer.MinWidth = ultraNarrow ? 80 : 180;
         GlobalSearchContainer.MaxWidth = compact ? (narrow ? 330 : 420) : 520;
+        SearchShortcutBadge.Visibility = narrow ? Visibility.Collapsed : Visibility.Visible;
 
         TopPublishButton.Width = compact ? 42 : 145;
         TopPublishText.Visibility = compact ? Visibility.Collapsed : Visibility.Visible;
         TopPublishIcon.Margin = compact ? new Thickness(0) : new Thickness(0, 0, 9, 0);
         HeaderContextPanel.Visibility = compact ? Visibility.Collapsed : Visibility.Visible;
-        MainPageHost.Margin = narrow ? new Thickness(12, 12, 12, 6) : compact ? new Thickness(16, 14, 16, 7) : new Thickness(20, 16, 20, 8);
+        PageSubtitle.Visibility = ultraNarrow || veryShort ? Visibility.Collapsed : Visibility.Visible;
+        MainPageHost.Margin = ultraNarrow ? new Thickness(8, 8, 8, 4) : narrow ? new Thickness(12, 12, 12, 6) : compact ? new Thickness(16, 14, 16, 7) : new Thickness(20, 16, 20, 8);
 
-        DashboardKpiGrid.Columns = narrow ? 3 : 6;
-        DashboardKpiGrid.Height = narrow ? 280 : 136;
+        DashboardKpiGrid.Columns = ultraNarrow ? 2 : narrow ? 3 : 6;
+        DashboardKpiGrid.Height = ultraNarrow ? 420 : narrow ? 280 : 136;
         ApplyPanelSpacing(DashboardKpiGrid, DashboardKpiGrid.Columns, 8);
 
-        PublishKpiGrid.Columns = narrow ? 3 : 5;
-        PublishKpiGrid.Height = narrow ? 224 : 112;
+        PublishKpiGrid.Columns = ultraNarrow ? 2 : narrow ? 3 : 5;
+        PublishKpiGrid.Height = ultraNarrow ? 336 : narrow ? 224 : 112;
         ApplyPanelSpacing(PublishKpiGrid, PublishKpiGrid.Columns, 7);
 
         PublishActionGrid.Columns = narrow ? 2 : 4;
@@ -114,10 +135,12 @@ public partial class MainWindow : Window
         PriceKpiGrid.Height = narrow ? 196 : 98;
         ApplyPanelSpacing(PriceKpiGrid, PriceKpiGrid.Columns, 8);
 
-        ProductDrawer.Width = narrow ? 350 : compact ? 390 : 422;
-        ServiceDrawer.Width = narrow ? 350 : compact ? 390 : 420;
+        var sidebarWidth = SidebarColumn.Width.Value;
+        var narrowDrawerWidth = Math.Clamp(width - sidebarWidth - 36, 280, 350);
+        ProductDrawer.Width = narrow ? narrowDrawerWidth : compact ? 390 : 422;
+        ServiceDrawer.Width = narrow ? narrowDrawerWidth : compact ? 390 : 420;
 
-        CategoriesTreeColumn.Width = new GridLength(narrow ? 280 : compact ? 320 : 355);
+        CategoriesTreeColumn.Width = new GridLength(ultraNarrow ? 220 : narrow ? 280 : compact ? 320 : 355);
         CategoriesDetailColumn.Width = new GridLength(1, GridUnitType.Star);
 
         if (narrow)
@@ -159,7 +182,8 @@ public partial class MainWindow : Window
             SettingsSystemCard.Margin = new Thickness(0);
         }
 
-        NotificationPopup.HorizontalOffset = narrow ? -260 : -310;
+        NotificationPopupCard.Width = ultraNarrow ? Math.Max(240, Math.Min(300, width - 90)) : narrow ? 330 : 360;
+        NotificationPopup.HorizontalOffset = ultraNarrow ? -(NotificationPopupCard.Width - 54) : narrow ? -260 : -310;
     }
 
     private static void ApplyPanelSpacing(Panel panel, int columns, double gap)
