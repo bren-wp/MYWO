@@ -11,7 +11,7 @@ No Inno Setup, NSIS or external installer compiler is required.
 ## Build
 
 ```powershell
-.\scripts\build-release.ps1 -Version 0.9.1
+.\scripts\build-release.ps1 -Version 0.9.2
 ```
 
 The script must produce in `dist/`:
@@ -19,8 +19,8 @@ The script must produce in `dist/`:
 - `MYWO-Setup.exe`
 - `MYWO-Portable.exe`
 - `MYWO-Update.exe`
-- `MYWO-Update-Payload-0.9.1.zip`
-- `MYWO-Installed-Files-0.9.1.zip`
+- `MYWO-Update-Payload-0.9.2.zip`
+- `MYWO-Installed-Files-0.9.2.zip`
 - `update.json`
 - `SHA256SUMS.txt`
 
