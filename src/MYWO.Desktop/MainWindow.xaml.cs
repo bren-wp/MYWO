@@ -42,7 +42,7 @@ public partial class MainWindow : Window
         Closing += (_, _) => WindowStateService.Save(this);
         Closed += (_, _) => SystemEvents.DisplaySettingsChanged -= DisplaySettingsChanged;
         DatabasePathText.Text = $"Baza: {AppDb.DatabasePath}";
-        var appVersion = typeof(MainWindow).Assembly.GetName().Version?.ToString(3) ?? "0.9.4";
+        var appVersion = typeof(MainWindow).Assembly.GetName().Version?.ToString(3) ?? "0.9.5";
         ReleaseModeText.Text = $"MYWO v{appVersion} • {(AppPaths.IsPortable ? "Portable" : "Instalirana verzija")}";
         SidebarVersionText.Text = $"MYWO v{appVersion}";
         _scheduleTimer.Tick += ScheduleTimer_Tick;
@@ -114,11 +114,21 @@ public partial class MainWindow : Window
         TopPublishIcon.Margin = compact ? new Thickness(0) : new Thickness(0, 0, 9, 0);
         HeaderContextPanel.Visibility = compact ? Visibility.Collapsed : Visibility.Visible;
         PageSubtitle.Visibility = ultraNarrow || veryShort ? Visibility.Collapsed : Visibility.Visible;
-        MainPageHost.Margin = ultraNarrow ? new Thickness(8, 8, 8, 4) : narrow ? new Thickness(12, 12, 12, 6) : compact ? new Thickness(16, 14, 16, 7) : new Thickness(20, 16, 20, 8);
+        MainPageHost.Margin = ultraNarrow
+            ? new Thickness(8, 8, 8, 4)
+            : narrow
+                ? new Thickness(12, 12, 12, 6)
+                : compact
+                    ? new Thickness(16, 14, 16, 7)
+                    : new Thickness(20, 16, 20, 8);
+
+        ApplyProductFilterLayout(compact);
+        ApplyServiceFilterLayout(compact);
 
         DashboardKpiGrid.Columns = ultraNarrow ? 2 : narrow ? 3 : 6;
         DashboardKpiGrid.Height = ultraNarrow ? 420 : narrow ? 280 : 136;
         ApplyPanelSpacing(DashboardKpiGrid, DashboardKpiGrid.Columns, 8);
+        ApplyDashboardResponsiveLayout(ultraNarrow);
 
         PublishKpiGrid.Columns = ultraNarrow ? 2 : narrow ? 3 : 5;
         PublishKpiGrid.Height = ultraNarrow ? 336 : narrow ? 224 : 112;
@@ -130,19 +140,266 @@ public partial class MainWindow : Window
         ApiKpiGrid.Columns = narrow ? 2 : 4;
         ApiKpiGrid.Height = narrow ? 200 : 100;
         ApplyPanelSpacing(ApiKpiGrid, ApiKpiGrid.Columns, 9);
+        ApplyApiResponsiveLayout(narrow, ultraNarrow);
 
         PriceKpiGrid.Columns = narrow ? 2 : 4;
         PriceKpiGrid.Height = narrow ? 196 : 98;
         ApplyPanelSpacing(PriceKpiGrid, PriceKpiGrid.Columns, 8);
+        ApplyPriceResponsiveLayout(narrow, ultraNarrow);
 
         var sidebarWidth = SidebarColumn.Width.Value;
-        var narrowDrawerWidth = Math.Clamp(width - sidebarWidth - 36, 280, 350);
+        var availableMainWidth = Math.Max(220, width - sidebarWidth);
+        var narrowDrawerWidth = Math.Clamp(availableMainWidth - 20, 220, 350);
         ProductDrawer.Width = narrow ? narrowDrawerWidth : compact ? 390 : 422;
         ServiceDrawer.Width = narrow ? narrowDrawerWidth : compact ? 390 : 420;
 
-        CategoriesTreeColumn.Width = new GridLength(ultraNarrow ? 220 : narrow ? 280 : compact ? 320 : 355);
+        CategoriesTreeCard.Visibility = ultraNarrow ? Visibility.Collapsed : Visibility.Visible;
+        CategoriesTreeColumn.Width = new GridLength(ultraNarrow ? 0 : narrow ? 280 : compact ? 320 : 355);
         CategoriesDetailColumn.Width = new GridLength(1, GridUnitType.Star);
+        CategoriesDetailHint.Visibility = ultraNarrow ? Visibility.Collapsed : Visibility.Visible;
+        CategoriesUltraActions.Visibility = ultraNarrow ? Visibility.Visible : Visibility.Collapsed;
 
+        ApplyHistoryResponsiveLayout(narrow, ultraNarrow);
+        ApplySettingsResponsiveLayout(narrow, ultraNarrow);
+
+        NotificationPopupCard.Width = ultraNarrow
+            ? Math.Max(220, Math.Min(300, availableMainWidth - 20))
+            : narrow
+                ? 330
+                : 360;
+        NotificationPopup.HorizontalOffset = ultraNarrow
+            ? -(NotificationPopupCard.Width - 54)
+            : narrow
+                ? -260
+                : -310;
+    }
+
+    private void ApplyProductFilterLayout(bool compact)
+    {
+        if (compact)
+        {
+            ProductFilterGrid.Height = 94;
+            ProductFilterGrid.RowDefinitions[0].Height = new GridLength(47);
+            ProductFilterGrid.RowDefinitions[1].Height = new GridLength(47);
+            for (var i = 0; i < ProductFilterGrid.ColumnDefinitions.Count; i++)
+                ProductFilterGrid.ColumnDefinitions[i].Width = i < 3 ? new GridLength(1, GridUnitType.Star) : new GridLength(0);
+
+            PlaceGridChild(ProductSearch, 0, 0);
+            PlaceGridChild(ProductStatusFilter, 0, 1);
+            PlaceGridChild(ProductAvailabilityFilter, 0, 2);
+            PlaceGridChild(ProductCategoryFilter, 1, 0);
+            PlaceGridChild(ProductBrandFilter, 1, 1);
+            PlaceGridChild(ProductMoreFiltersBorder, 1, 2);
+            ProductCategoryFilter.Margin = new Thickness(0, 3, 0, 3);
+        }
+        else
+        {
+            ProductFilterGrid.Height = 47;
+            ProductFilterGrid.RowDefinitions[0].Height = new GridLength(1, GridUnitType.Star);
+            ProductFilterGrid.RowDefinitions[1].Height = new GridLength(0);
+            var widths = new[] { 2.0, 0.95, 1.05, 1.15, 1.05, 1.1 };
+            for (var i = 0; i < widths.Length; i++)
+                ProductFilterGrid.ColumnDefinitions[i].Width = new GridLength(widths[i], GridUnitType.Star);
+            PlaceGridChild(ProductSearch, 0, 0);
+            PlaceGridChild(ProductStatusFilter, 0, 1);
+            PlaceGridChild(ProductAvailabilityFilter, 0, 2);
+            PlaceGridChild(ProductCategoryFilter, 0, 3);
+            PlaceGridChild(ProductBrandFilter, 0, 4);
+            PlaceGridChild(ProductMoreFiltersBorder, 0, 5);
+            ProductCategoryFilter.Margin = new Thickness(8, 3, 0, 3);
+        }
+    }
+
+    private void ApplyServiceFilterLayout(bool compact)
+    {
+        if (compact)
+        {
+            ServiceFilterGrid.Height = 94;
+            ServiceFilterGrid.RowDefinitions[0].Height = new GridLength(47);
+            ServiceFilterGrid.RowDefinitions[1].Height = new GridLength(47);
+            ServiceFilterGrid.ColumnDefinitions[0].Width = new GridLength(1, GridUnitType.Star);
+            ServiceFilterGrid.ColumnDefinitions[1].Width = new GridLength(1, GridUnitType.Star);
+            ServiceFilterGrid.ColumnDefinitions[2].Width = new GridLength(0);
+            ServiceFilterGrid.ColumnDefinitions[3].Width = new GridLength(0);
+            PlaceGridChild(ServiceSearch, 0, 0);
+            PlaceGridChild(ServiceCategoryFilter, 0, 1);
+            PlaceGridChild(ServiceStatusFilter, 1, 0);
+            PlaceGridChild(ServiceSortBorder, 1, 1);
+            ServiceStatusFilter.Margin = new Thickness(0, 3, 0, 3);
+        }
+        else
+        {
+            ServiceFilterGrid.Height = 47;
+            ServiceFilterGrid.RowDefinitions[0].Height = new GridLength(1, GridUnitType.Star);
+            ServiceFilterGrid.RowDefinitions[1].Height = new GridLength(0);
+            var widths = new[] { 2.0, 1.15, 1.0, 1.1 };
+            for (var i = 0; i < widths.Length; i++)
+                ServiceFilterGrid.ColumnDefinitions[i].Width = new GridLength(widths[i], GridUnitType.Star);
+            PlaceGridChild(ServiceSearch, 0, 0);
+            PlaceGridChild(ServiceCategoryFilter, 0, 1);
+            PlaceGridChild(ServiceStatusFilter, 0, 2);
+            PlaceGridChild(ServiceSortBorder, 0, 3);
+            ServiceStatusFilter.Margin = new Thickness(8, 3, 0, 3);
+        }
+    }
+
+    private void ApplyDashboardResponsiveLayout(bool ultraNarrow)
+    {
+        if (ultraNarrow)
+        {
+            DashboardMainGrid.Height = 520;
+            DashboardChartColumn.Width = new GridLength(1, GridUnitType.Star);
+            DashboardHistoryColumn.Width = new GridLength(0);
+            DashboardMainPrimaryRow.Height = new GridLength(255);
+            DashboardMainSecondaryRow.Height = new GridLength(255);
+            PlaceGridChild(DashboardChartCard, 0, 0, 2);
+            PlaceGridChild(DashboardHistoryCard, 1, 0, 2);
+            DashboardChartCard.Margin = new Thickness(0, 0, 0, 9);
+            DashboardHistoryCard.Margin = new Thickness(0);
+
+            DashboardSummaryGrid.Height = 430;
+            DashboardSummaryGrid.ColumnDefinitions[0].Width = new GridLength(1, GridUnitType.Star);
+            DashboardSummaryGrid.ColumnDefinitions[1].Width = new GridLength(1, GridUnitType.Star);
+            DashboardSummaryGrid.ColumnDefinitions[2].Width = new GridLength(0);
+            DashboardSummaryPrimaryRow.Height = new GridLength(210);
+            DashboardSummarySecondaryRow.Height = new GridLength(210);
+            PlaceGridChild(DashboardQuickDataCard, 0, 0);
+            PlaceGridChild(DashboardQuickActionsCard, 0, 1);
+            PlaceGridChild(DashboardPromoCard, 1, 0, 2);
+            DashboardQuickDataCard.Margin = new Thickness(0, 0, 8, 8);
+            DashboardQuickActionsCard.Margin = new Thickness(0, 0, 0, 8);
+            DashboardPromoCard.Margin = new Thickness(0);
+        }
+        else
+        {
+            DashboardMainGrid.Height = 290;
+            DashboardChartColumn.Width = new GridLength(1.65, GridUnitType.Star);
+            DashboardHistoryColumn.Width = new GridLength(1, GridUnitType.Star);
+            DashboardMainPrimaryRow.Height = new GridLength(1, GridUnitType.Star);
+            DashboardMainSecondaryRow.Height = new GridLength(0);
+            PlaceGridChild(DashboardChartCard, 0, 0);
+            PlaceGridChild(DashboardHistoryCard, 0, 1);
+            DashboardChartCard.Margin = new Thickness(0, 0, 9, 0);
+            DashboardHistoryCard.Margin = new Thickness(0);
+
+            DashboardSummaryGrid.Height = 218;
+            DashboardSummaryGrid.ColumnDefinitions[0].Width = new GridLength(1, GridUnitType.Star);
+            DashboardSummaryGrid.ColumnDefinitions[1].Width = new GridLength(1, GridUnitType.Star);
+            DashboardSummaryGrid.ColumnDefinitions[2].Width = new GridLength(0.9, GridUnitType.Star);
+            DashboardSummaryPrimaryRow.Height = new GridLength(1, GridUnitType.Star);
+            DashboardSummarySecondaryRow.Height = new GridLength(0);
+            PlaceGridChild(DashboardQuickDataCard, 0, 0);
+            PlaceGridChild(DashboardQuickActionsCard, 0, 1);
+            PlaceGridChild(DashboardPromoCard, 0, 2);
+            DashboardQuickDataCard.Margin = new Thickness(0, 0, 8, 0);
+            DashboardQuickActionsCard.Margin = new Thickness(0, 0, 8, 0);
+            DashboardPromoCard.Margin = new Thickness(0);
+        }
+    }
+
+    private void ApplyApiResponsiveLayout(bool narrow, bool ultraNarrow)
+    {
+        ApiLayoutGrid.MinHeight = ultraNarrow ? 970 : narrow ? 820 : 620;
+        ApiKeysRow.Height = new GridLength(ultraNarrow ? 330 : 355);
+        if (ultraNarrow)
+        {
+            ApiBottomRow.Height = new GridLength(430);
+            ApiQuickColumn.Width = new GridLength(1, GridUnitType.Star);
+            ApiEndpointColumn.Width = new GridLength(0);
+            ApiBottomPrimaryRow.Height = new GridLength(190);
+            ApiBottomSecondaryRow.Height = new GridLength(230);
+            PlaceGridChild(ApiQuickCard, 0, 0, 2);
+            PlaceGridChild(ApiEndpointCard, 1, 0, 2);
+            ApiQuickCard.Margin = new Thickness(0, 0, 0, 9);
+            ApiEndpointCard.Margin = new Thickness(0);
+        }
+        else
+        {
+            ApiBottomRow.Height = new GridLength(1, GridUnitType.Star);
+            ApiQuickColumn.Width = new GridLength(0.95, GridUnitType.Star);
+            ApiEndpointColumn.Width = new GridLength(1.9, GridUnitType.Star);
+            ApiBottomPrimaryRow.Height = new GridLength(1, GridUnitType.Star);
+            ApiBottomSecondaryRow.Height = new GridLength(0);
+            PlaceGridChild(ApiQuickCard, 0, 0);
+            PlaceGridChild(ApiEndpointCard, 0, 1);
+            ApiQuickCard.Margin = new Thickness(0, 0, 9, 0);
+            ApiEndpointCard.Margin = new Thickness(0);
+        }
+    }
+
+    private void ApplyHistoryResponsiveLayout(bool narrow, bool ultraNarrow)
+    {
+        HistorySearch.Width = ultraNarrow ? 180 : narrow ? 220 : 300;
+        HistoryFormatFilter.Width = ultraNarrow ? 115 : 130;
+        if (ultraNarrow)
+        {
+            HistoryLayoutGrid.MinHeight = 1120;
+            HistoryDetailsRow.Height = new GridLength(570);
+            HistoryDetailColumn.Width = new GridLength(1, GridUnitType.Star);
+            HistoryFileColumn.Width = new GridLength(0);
+            HistoryActionsColumn.Width = new GridLength(0);
+            HistoryDetailsGrid.RowDefinitions[0].Height = new GridLength(170);
+            HistoryDetailsGrid.RowDefinitions[1].Height = new GridLength(170);
+            HistoryDetailsGrid.RowDefinitions[2].Height = new GridLength(220);
+            PlaceGridChild(HistoryDetailCard, 0, 0, 3);
+            PlaceGridChild(HistoryFileCard, 1, 0, 3);
+            PlaceGridChild(HistoryActionsCard, 2, 0, 3);
+            HistoryDetailCard.Margin = new Thickness(0, 0, 0, 8);
+            HistoryFileCard.Margin = new Thickness(0, 0, 0, 8);
+            HistoryActionsCard.Margin = new Thickness(0);
+        }
+        else
+        {
+            HistoryLayoutGrid.MinHeight = 540;
+            HistoryDetailsRow.Height = new GridLength(205);
+            HistoryDetailColumn.Width = new GridLength(1.25, GridUnitType.Star);
+            HistoryFileColumn.Width = new GridLength(1.2, GridUnitType.Star);
+            HistoryActionsColumn.Width = new GridLength(0.8, GridUnitType.Star);
+            HistoryDetailsGrid.RowDefinitions[0].Height = new GridLength(1, GridUnitType.Star);
+            HistoryDetailsGrid.RowDefinitions[1].Height = new GridLength(0);
+            HistoryDetailsGrid.RowDefinitions[2].Height = new GridLength(0);
+            PlaceGridChild(HistoryDetailCard, 0, 0);
+            PlaceGridChild(HistoryFileCard, 0, 1);
+            PlaceGridChild(HistoryActionsCard, 0, 2);
+            HistoryDetailCard.Margin = new Thickness(0, 0, 8, 0);
+            HistoryFileCard.Margin = new Thickness(0, 0, 8, 0);
+            HistoryActionsCard.Margin = new Thickness(0);
+        }
+    }
+
+    private void ApplyPriceResponsiveLayout(bool narrow, bool ultraNarrow)
+    {
+        PriceHistoryHeading.Visibility = ultraNarrow ? Visibility.Collapsed : Visibility.Visible;
+        if (narrow)
+        {
+            PricesLayoutGrid.MinHeight = 900;
+            PriceOverviewRow.Height = new GridLength(500);
+            PriceChartColumn.Width = new GridLength(1, GridUnitType.Star);
+            ScheduledPriceColumn.Width = new GridLength(0);
+            PriceOverviewPrimaryRow.Height = new GridLength(245);
+            PriceOverviewSecondaryRow.Height = new GridLength(245);
+            PlaceGridChild(PriceChartCard, 0, 0, 2);
+            PlaceGridChild(ScheduledPriceCard, 1, 0, 2);
+            PriceChartCard.Margin = new Thickness(0, 0, 0, 9);
+            ScheduledPriceCard.Margin = new Thickness(0);
+        }
+        else
+        {
+            PricesLayoutGrid.MinHeight = 620;
+            PriceOverviewRow.Height = new GridLength(250);
+            PriceChartColumn.Width = new GridLength(2.4, GridUnitType.Star);
+            ScheduledPriceColumn.Width = new GridLength(1, GridUnitType.Star);
+            PriceOverviewPrimaryRow.Height = new GridLength(1, GridUnitType.Star);
+            PriceOverviewSecondaryRow.Height = new GridLength(0);
+            PlaceGridChild(PriceChartCard, 0, 0);
+            PlaceGridChild(ScheduledPriceCard, 0, 1);
+            PriceChartCard.Margin = new Thickness(0, 0, 9, 0);
+            ScheduledPriceCard.Margin = new Thickness(0);
+        }
+    }
+
+    private void ApplySettingsResponsiveLayout(bool narrow, bool ultraNarrow)
+    {
         if (narrow)
         {
             SettingsCompaniesColumn.MinWidth = 0;
@@ -150,49 +407,60 @@ public partial class MainWindow : Window
             SettingsCompaniesColumn.Width = new GridLength(1, GridUnitType.Star);
             SettingsSystemColumn.Width = new GridLength(0);
             SettingsPrimaryRow.Height = new GridLength(430);
-            SettingsSecondaryRow.Height = new GridLength(500);
-
+            SettingsSecondaryRow.Height = new GridLength(ultraNarrow ? 900 : 720);
+            SettingsMainGrid.MinHeight = ultraNarrow ? 1330 : 1150;
             Grid.SetRow(SettingsCompaniesCard, 0);
             Grid.SetColumn(SettingsCompaniesCard, 0);
             Grid.SetColumnSpan(SettingsCompaniesCard, 2);
             SettingsCompaniesCard.Margin = new Thickness(0, 0, 0, 10);
-
             Grid.SetRow(SettingsSystemCard, 1);
             Grid.SetColumn(SettingsSystemCard, 0);
             Grid.SetColumnSpan(SettingsSystemCard, 2);
             SettingsSystemCard.Margin = new Thickness(0);
+            SettingsOptionsGrid.Columns = ultraNarrow ? 1 : 2;
+            ApplyPanelSpacing(SettingsOptionsGrid, SettingsOptionsGrid.Columns, 7);
         }
         else
         {
             SettingsCompaniesColumn.MinWidth = 240;
             SettingsSystemColumn.MinWidth = 430;
-            SettingsCompaniesColumn.Width = new GridLength(compact ? 0.72 : 0.82, GridUnitType.Star);
+            SettingsCompaniesColumn.Width = new GridLength(0.82, GridUnitType.Star);
             SettingsSystemColumn.Width = new GridLength(1.65, GridUnitType.Star);
             SettingsPrimaryRow.Height = new GridLength(1, GridUnitType.Star);
             SettingsSecondaryRow.Height = new GridLength(0);
-
+            SettingsMainGrid.MinHeight = 430;
             Grid.SetRow(SettingsCompaniesCard, 0);
             Grid.SetColumn(SettingsCompaniesCard, 0);
             Grid.SetColumnSpan(SettingsCompaniesCard, 1);
             SettingsCompaniesCard.Margin = new Thickness(0, 0, 10, 0);
-
             Grid.SetRow(SettingsSystemCard, 0);
             Grid.SetColumn(SettingsSystemCard, 1);
             Grid.SetColumnSpan(SettingsSystemCard, 1);
             SettingsSystemCard.Margin = new Thickness(0);
+            SettingsOptionsGrid.Columns = 3;
+            ApplyPanelSpacing(SettingsOptionsGrid, 3, 7);
         }
+    }
 
-        NotificationPopupCard.Width = ultraNarrow ? Math.Max(240, Math.Min(300, width - 90)) : narrow ? 330 : 360;
-        NotificationPopup.HorizontalOffset = ultraNarrow ? -(NotificationPopupCard.Width - 54) : narrow ? -260 : -310;
+    private static void PlaceGridChild(FrameworkElement element, int row, int column, int columnSpan = 1)
+    {
+        Grid.SetRow(element, row);
+        Grid.SetColumn(element, column);
+        Grid.SetColumnSpan(element, columnSpan);
     }
 
     private static void ApplyPanelSpacing(Panel panel, int columns, double gap)
     {
+        if (columns <= 0) return;
         var children = panel.Children.OfType<FrameworkElement>().ToArray();
+        if (children.Length == 0) return;
+        var lastRowIndex = (children.Length - 1) / columns;
         for (var i = 0; i < children.Length; i++)
         {
-            var lastColumn = (i + 1) % columns == 0;
-            var lastRow = i >= children.Length - columns;
+            var columnIndex = i % columns;
+            var rowIndex = i / columns;
+            var lastColumn = columnIndex == columns - 1 || i == children.Length - 1;
+            var lastRow = rowIndex == lastRowIndex;
             children[i].Margin = new Thickness(0, 0, lastColumn ? 0 : gap, lastRow ? 0 : gap);
         }
     }
