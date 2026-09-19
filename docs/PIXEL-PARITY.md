@@ -1,4 +1,4 @@
-# MYWO screenshot parity specification — v0.9.1
+# MYWO screenshot parity specification — v0.9.2
 
 The supplied 1448×1086 reference captures are the visual source of truth. The application is not allowed to use those captures as a background; the UI must be constructed from native WPF controls and vector/icon glyphs.
 
