@@ -279,7 +279,7 @@ public partial class MainWindow : Window
             HistoryDetailsName.Text = "Odaberite objavu";
             HistoryDetailsDate.Text = "";
             HistoryDetailsHash.Text = "";
-            HistoryDetailsSystem.IO.Path.Text = "—";
+            HistoryDetailsPath.Text = "—";
             HistoryDetailsCount.Text = "0 stavki";
             return;
         }
@@ -287,7 +287,7 @@ public partial class MainWindow : Window
         HistoryDetailsName.Text = snapshot.FileName;
         HistoryDetailsDate.Text = $"Objavljeno {snapshot.CreatedAt.ToLocalTime():dd.MM.yyyy. 'u' HH:mm}";
         HistoryDetailsHash.Text = $"SHA-256  {snapshot.Sha256}";
-        HistoryDetailsSystem.IO.Path.Text = string.IsNullOrWhiteSpace(snapshot.FullPath) ? snapshot.FileName : snapshot.FullPath;
+        HistoryDetailsPath.Text = string.IsNullOrWhiteSpace(snapshot.FullPath) ? snapshot.FileName : snapshot.FullPath;
         HistoryDetailsCount.Text = $"{snapshot.ItemCount:N0} stavki • {snapshot.Format}";
     }
 
