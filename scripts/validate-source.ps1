@@ -1,7 +1,7 @@
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 $root = Split-Path -Parent $PSScriptRoot
-$version = '0.9.4'
+$version = '0.9.5'
 
 Write-Host '[1/6] Validating XAML/XML...'
 Get-ChildItem (Join-Path $root 'src\MYWO.Desktop') -Filter '*.xaml' -Recurse | ForEach-Object {
@@ -27,11 +27,23 @@ foreach ($token in $geometry) {
 foreach ($token in @(
     'x:Name="SidebarLogoRow"',
     'x:Name="PageHeaderRow"',
+    'x:Name="ProductFilterGrid"',
+    'x:Name="ProductMoreFiltersBorder"',
+    'x:Name="ServiceFilterGrid"',
+    'x:Name="ServiceSortBorder"',
+    'x:Name="DashboardMainGrid"',
+    'x:Name="DashboardSummaryGrid"',
     'x:Name="CategoriesTreeColumn"',
+    'x:Name="CategoriesTreeCard"',
+    'x:Name="CategoriesUltraActions"',
+    'x:Name="ApiBottomGrid"',
+    'x:Name="HistoryDetailsGrid"',
+    'x:Name="PriceOverviewGrid"',
     'x:Name="SettingsPrimaryRow"',
     'x:Name="SettingsSecondaryRow"',
     'x:Name="SettingsCompaniesCard"',
     'x:Name="SettingsSystemCard"',
+    'x:Name="SettingsOptionsGrid"',
     'x:Name="SearchShortcutBadge"',
     'x:Name="NotificationPopupCard"'
 )) {
@@ -39,8 +51,36 @@ foreach ($token in @(
 }
 
 $mainCode = Get-Content (Join-Path $root 'src\MYWO.Desktop\MainWindow.xaml.cs') -Raw
-foreach ($token in @('ultraNarrow','DpiChanged','WindowStateService.Restore','FitWindowToCurrentWorkArea')) {
+foreach ($token in @(
+    'ultraNarrow',
+    'DpiChanged',
+    'WindowStateService.Restore',
+    'FitWindowToCurrentWorkArea',
+    'ApplyProductFilterLayout',
+    'ApplyServiceFilterLayout',
+    'ApplyDashboardResponsiveLayout',
+    'ApplyApiResponsiveLayout',
+    'ApplyHistoryResponsiveLayout',
+    'ApplyPriceResponsiveLayout',
+    'ApplySettingsResponsiveLayout',
+    'CategoriesUltraActions'
+)) {
     if (-not $mainCode.Contains($token)) { throw "Adaptive runtime token missing: $token" }
+}
+
+$workflow = Get-Content (Join-Path $root '.github\workflows\windows-release.yml') -Raw
+foreach ($token in @(
+    '@{ W = 880; H = 600 }',
+    '@{ W = 1024; H = 768 }',
+    '@{ W = 1280; H = 720 }',
+    '@{ W = 1366; H = 768 }',
+    '@{ W = 1440; H = 900 }',
+    '@{ W = 1600; H = 900 }',
+    '@{ W = 1920; H = 1080 }',
+    '@{ W = 2560; H = 1440 }',
+    '@{ W = 3840; H = 2160 }'
+)) {
+    if (-not $workflow.Contains($token)) { throw "Runtime resize QA token missing: $token" }
 }
 $windowStatePath = Join-Path $root 'src\MYWO.Desktop\Services\WindowStateService.cs'
 if (-not (Test-Path $windowStatePath)) { throw 'Missing persisted window-state service.' }
