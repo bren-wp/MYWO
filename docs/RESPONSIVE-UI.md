@@ -1,6 +1,6 @@
 # MYWO responsive UI / UX
 
-MYWO v0.9.1 keeps the approved 1380×950 reference composition as the full desktop layout, while adapting safely to smaller and larger Windows work areas.
+MYWO v0.9.2 keeps the approved 1380×950 reference composition as the full desktop layout, while adapting safely to smaller and larger Windows work areas.
 
 ## Adaptive modes
 
@@ -38,3 +38,8 @@ The supplied reference screenshots remain the design authority for the full desk
 | 3840×2160 at 150–200% | layout rounding and images remain clean |
 
 Windows CI additionally compiles the solution, starts Portable, verifies portable data creation, installs Setup and verifies integrated uninstall through `MYWO-Update.exe --uninstall`.
+
+
+## Dense modules
+
+At the narrow breakpoint Dashboard, Publication, API and Price Changes reflow KPI/action groups into additional rows. API, Archive and Price Changes also use vertical fallback scrolling, so short 600–768 px laptop work areas do not compress the bottom sections into unusable space.
