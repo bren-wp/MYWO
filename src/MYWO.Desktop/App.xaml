@@ -388,6 +388,11 @@
             <Setter Property="Width" Value="10"/>
             <Setter Property="Background" Value="Transparent"/>
         </Style>
+        <Style TargetType="Image">
+            <Setter Property="RenderOptions.BitmapScalingMode" Value="HighQuality"/>
+            <Setter Property="SnapsToDevicePixels" Value="True"/>
+        </Style>
+
         <Style TargetType="ToolTip">
             <Setter Property="Background" Value="#152A44"/>
             <Setter Property="Foreground" Value="White"/>
