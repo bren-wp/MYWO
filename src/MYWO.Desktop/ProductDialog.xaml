@@ -1,8 +1,8 @@
 <Window x:Class="MYWO.Desktop.ProductDialog"
         xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        Title="Dodaj proizvod" Width="650" Height="790" MinHeight="700"
-        WindowStartupLocation="CenterOwner" ResizeMode="CanResizeWithGrip" WindowStyle="None">
+        Title="Dodaj proizvod" Width="650" Height="790" MinWidth="500" MinHeight="520"
+        WindowStartupLocation="CenterOwner" ResizeMode="CanResizeWithGrip" WindowStyle="None" UseLayoutRounding="True" SnapsToDevicePixels="True">
     <Border Background="{StaticResource SurfaceBrush}" BorderBrush="#2B4968" BorderThickness="1" CornerRadius="12">
         <Grid Margin="22">
             <Grid.RowDefinitions><RowDefinition Height="64"/><RowDefinition Height="*"/><RowDefinition Height="58"/></Grid.RowDefinitions>
