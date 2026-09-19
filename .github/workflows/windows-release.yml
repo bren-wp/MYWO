@@ -1,9 +1,9 @@
-name: MYWO v0.9.3 Chat Delivery
+name: MYWO v0.9.4 Chat Delivery
 
 on:
   push:
     branches:
-      - chatgpt/mywo-v0.9.3-delivery
+      - chatgpt/mywo-v0.9.4-delivery
 
 permissions:
   contents: read
@@ -13,20 +13,20 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - name: Download verified v0.9.3 release
+      - name: Download verified v0.9.4 release
         shell: bash
         env:
           GH_TOKEN: ${{ github.token }}
         run: |
           set -euo pipefail
           mkdir -p export
-          gh release download v0.9.3 --repo "${GITHUB_REPOSITORY}" --dir export
+          gh release download v0.9.4 --repo "${GITHUB_REPOSITORY}" --dir export
           ls -lah export
 
       - name: Export Setup
         uses: actions/upload-artifact@v4
         with:
-          name: MYWO-Setup-v0.9.3
+          name: MYWO-Setup-v0.9.4
           path: export/MYWO-Setup.exe
           compression-level: 0
           if-no-files-found: error
@@ -34,7 +34,7 @@ jobs:
       - name: Export Portable
         uses: actions/upload-artifact@v4
         with:
-          name: MYWO-Portable-v0.9.3
+          name: MYWO-Portable-v0.9.4
           path: export/MYWO-Portable.exe
           compression-level: 0
           if-no-files-found: error
@@ -42,7 +42,7 @@ jobs:
       - name: Export Updater
         uses: actions/upload-artifact@v4
         with:
-          name: MYWO-Update-v0.9.3
+          name: MYWO-Update-v0.9.4
           path: export/MYWO-Update.exe
           compression-level: 0
           if-no-files-found: error
@@ -50,31 +50,31 @@ jobs:
       - name: Export Source
         uses: actions/upload-artifact@v4
         with:
-          name: MYWO-Source-v0.9.3
-          path: export/MYWO-0.9.3-source.zip
+          name: MYWO-Source-v0.9.4
+          path: export/MYWO-0.9.4-source.zip
           compression-level: 0
           if-no-files-found: error
 
       - name: Export Update Payload
         uses: actions/upload-artifact@v4
         with:
-          name: MYWO-Update-Payload-v0.9.3
-          path: export/MYWO-Update-Payload-0.9.3.zip
+          name: MYWO-Update-Payload-v0.9.4
+          path: export/MYWO-Update-Payload-0.9.4.zip
           compression-level: 0
           if-no-files-found: error
 
       - name: Export Installed Files
         uses: actions/upload-artifact@v4
         with:
-          name: MYWO-Installed-Files-v0.9.3
-          path: export/MYWO-Installed-Files-0.9.3.zip
+          name: MYWO-Installed-Files-v0.9.4
+          path: export/MYWO-Installed-Files-0.9.4.zip
           compression-level: 0
           if-no-files-found: error
 
       - name: Export Metadata
         uses: actions/upload-artifact@v4
         with:
-          name: MYWO-Metadata-v0.9.3
+          name: MYWO-Metadata-v0.9.4
           path: |
             export/SHA256SUMS.txt
             export/update.json
