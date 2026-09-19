@@ -40,7 +40,7 @@
             <Border Grid.Column="0" Background="{StaticResource SidebarBrush}" BorderBrush="#18314B" BorderThickness="0,0,1,0">
                 <Grid>
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="82"/>
+                        <RowDefinition x:Name="SidebarLogoRow" Height="82"/>
                         <RowDefinition Height="*"/>
                         <RowDefinition x:Name="SidebarFooterRow" Height="116"/>
                     </Grid.RowDefinitions>
@@ -127,7 +127,7 @@
             <!-- MAIN AREA -->
             <Grid Grid.Column="1">
                 <Grid.RowDefinitions>
-                    <RowDefinition Height="68"/>
+                    <RowDefinition x:Name="MainToolbarRow" Height="68"/>
                     <RowDefinition Height="*"/>
                     <RowDefinition Height="0"/>
                 </Grid.RowDefinitions>
@@ -182,7 +182,7 @@
 
                 <Grid x:Name="MainPageHost" Grid.Row="1" Margin="20,16,20,8">
                     <Grid.RowDefinitions>
-                        <RowDefinition Height="64"/>
+                        <RowDefinition x:Name="PageHeaderRow" Height="64"/>
                         <RowDefinition Height="*"/>
                     </Grid.RowDefinitions>
 
@@ -500,7 +500,7 @@
                                 </Grid>
                             </Border>
                             <Grid Grid.Row="1" Margin="0,10,0,0">
-                                <Grid.ColumnDefinitions><ColumnDefinition Width="355"/><ColumnDefinition Width="*"/></Grid.ColumnDefinitions>
+                                <Grid.ColumnDefinitions><ColumnDefinition x:Name="CategoriesTreeColumn" Width="355"/><ColumnDefinition x:Name="CategoriesDetailColumn" Width="*"/></Grid.ColumnDefinitions>
                                 <Border Grid.Column="0" Style="{StaticResource CardBorder}" Margin="0,0,10,0" Padding="12">
                                     <Grid><Grid.RowDefinitions><RowDefinition Height="48"/><RowDefinition Height="43"/><RowDefinition Height="*"/><RowDefinition Height="46"/></Grid.RowDefinitions>
                                         <DockPanel><TextBlock Text="Kategorije" Style="{StaticResource SectionTitle}" VerticalAlignment="Center"/><Button DockPanel.Dock="Right" Style="{StaticResource PrimaryButton}" Content="＋  Nova kategorija" Click="AddCategory_Click"/></DockPanel>
@@ -552,7 +552,7 @@
                             <DataGrid Grid.Row="1" x:Name="BrandsGrid" IsReadOnly="True" SelectionMode="Single">
                                 <DataGrid.Columns><DataGridTextColumn Header="Naziv brenda" Binding="{Binding Name}" Width="1.2*"/><DataGridTextColumn Header="Opis" Binding="{Binding Description}" Width="2.2*"/><DataGridTemplateColumn Header="Status" Width="86"><DataGridTemplateColumn.CellTemplate><DataTemplate><Border Style="{StaticResource StatusPillBorder}" HorizontalAlignment="Left"><TextBlock Style="{StaticResource StatusPillText}"/></Border></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn></DataGrid.Columns>
                             </DataGrid>
-                            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right"><Button Style="{StaticResource SecondaryButton}" Content="Uredi" Click="EditBrand_Click"/><Button Style="{StaticResource DangerButton}" Content="Obriši" Click="DeleteBrand_Click"/></StackPanel>
+                            <WrapPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right"><Button Style="{StaticResource SecondaryButton}" Content="Uredi" Click="EditBrand_Click"/><Button Style="{StaticResource DangerButton}" Content="Obriši" Click="DeleteBrand_Click"/></WrapPanel>
                         </Grid>
 
                         <!-- PUBLISH -->
@@ -644,10 +644,10 @@
                             <Grid x:Name="HistoryLayoutGrid" MinHeight="540">
                             <Grid.RowDefinitions><RowDefinition Height="54"/><RowDefinition Height="*"/><RowDefinition Height="205"/></Grid.RowDefinitions>
                             <DockPanel Grid.Row="0" LastChildFill="False" Margin="0,0,0,9">
-                                <StackPanel Orientation="Horizontal">
+                                <WrapPanel Orientation="Horizontal">
                                     <TextBox x:Name="HistorySearch" Style="{StaticResource SearchBox}" Width="300" ToolTip="Pretraži po nazivu ili SHA-256" TextChanged="HistoryFilter_Changed"/>
                                     <ComboBox x:Name="HistoryFormatFilter" Width="130" Margin="8,3,0,3" SelectionChanged="HistoryFilter_Changed"><ComboBoxItem Content="Sve vrste" Tag="" IsSelected="True"/><ComboBoxItem Content="XML" Tag="XML"/><ComboBoxItem Content="CSV" Tag="CSV"/></ComboBox>
-                                </StackPanel>
+                                </WrapPanel>
                                 <Button DockPanel.Dock="Right" Style="{StaticResource SecondaryButton}" Content="Poništi filtere" Click="ResetHistoryFilters_Click"/>
                             </DockPanel>
                             <DataGrid Grid.Row="1" x:Name="HistoryGrid" IsReadOnly="True" SelectionMode="Single" SelectionChanged="HistoryGrid_SelectionChanged">
@@ -685,10 +685,10 @@
                             </Grid>
                             <DockPanel Grid.Row="2" LastChildFill="False" Margin="0,7,0,0">
                                 <TextBlock Text="Povijest svih promjena cijena" FontWeight="SemiBold" VerticalAlignment="Center"/>
-                                <StackPanel DockPanel.Dock="Right" Orientation="Horizontal">
+                                <WrapPanel DockPanel.Dock="Right" Orientation="Horizontal" HorizontalAlignment="Right">
                                     <Button Style="{StaticResource SecondaryButton}" Content="Vrati odabranu promjenu" Click="UndoPriceChange_Click"/>
                                     <Button Style="{StaticResource SecondaryButton}" Content="Osvježi" Click="RefreshPriceModule_Click"/>
-                                </StackPanel>
+                                </WrapPanel>
                             </DockPanel>
                             <DataGrid Grid.Row="3" x:Name="PriceHistoryGrid" IsReadOnly="True" SelectionMode="Single" Margin="0,5,0,0">
                                 <DataGrid.Columns><DataGridTextColumn Header="Datum" Binding="{Binding ChangedAt, StringFormat={}{0:dd.MM.yyyy HH:mm}}" Width="145"/><DataGridTextColumn Header="Stavka" Binding="{Binding EntityName}" Width="1.6*"/><DataGridTextColumn Header="Vrsta" Binding="{Binding EntityType}" Width="80"/><DataGridTextColumn Header="Izvor" Binding="{Binding SourceDisplay}" Width="85"/><DataGridTextColumn Header="Stara cijena" Binding="{Binding OldRetailPrice, StringFormat={}{0:N2} €}" Width="105"/><DataGridTextColumn Header="Nova cijena" Binding="{Binding NewRetailPrice, StringFormat={}{0:N2} €}" Width="105"/><DataGridTextColumn Header="Napomena" Binding="{Binding Note}" Width="1.4*"/></DataGrid.Columns>
@@ -708,7 +708,7 @@
                             <Grid.RowDefinitions><RowDefinition Height="48"/><RowDefinition Height="*"/><RowDefinition Height="46"/></Grid.RowDefinitions>
                             <UniformGrid Grid.Row="0" Columns="3" Margin="0,0,0,9"><Button Style="{StaticResource SecondaryButton}" Content="Audit" Tag="audit" Click="Nav_Click"/><Button Style="{StaticResource PrimaryButton}" Content="Tvrtke"/><Button Style="{StaticResource SecondaryButton}" Content="Postavke" Tag="settings" Click="Nav_Click"/></UniformGrid>
                             <DataGrid Grid.Row="1" x:Name="CompaniesGrid" IsReadOnly="True" SelectionMode="Single" MouseDoubleClick="CompaniesGrid_MouseDoubleClick"><DataGrid.Columns><DataGridTextColumn Header="Naziv" Binding="{Binding Name}" Width="2*"/><DataGridTextColumn Header="OIB" Binding="{Binding Oib}" Width="*"/><DataGridTextColumn Header="Web stranica" Binding="{Binding Website}" Width="2*"/><DataGridTemplateColumn Header="Status" Width="86"><DataGridTemplateColumn.CellTemplate><DataTemplate><Border Style="{StaticResource StatusPillBorder}" HorizontalAlignment="Left"><TextBlock Style="{StaticResource StatusPillText}"/></Border></DataTemplate></DataGridTemplateColumn.CellTemplate></DataGridTemplateColumn></DataGrid.Columns></DataGrid>
-                            <StackPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right"><Button Style="{StaticResource PrimaryButton}" Content="＋ Dodaj tvrtku" Click="AddCompany_Click"/><Button Style="{StaticResource SecondaryButton}" Content="Uredi" Click="EditCompany_Click"/></StackPanel>
+                            <WrapPanel Grid.Row="2" Orientation="Horizontal" HorizontalAlignment="Right"><Button Style="{StaticResource PrimaryButton}" Content="＋ Dodaj tvrtku" Click="AddCompany_Click"/><Button Style="{StaticResource SecondaryButton}" Content="Uredi" Click="EditCompany_Click"/></WrapPanel>
                         </Grid>
 
                         <!-- SETTINGS -->
