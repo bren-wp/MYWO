@@ -10,11 +10,11 @@
 
 [![Windows](https://img.shields.io/badge/Windows-10%20%7C%2011-2563EB?style=for-the-badge&logo=windows11&logoColor=white)](https://github.com/bren-wp/MYWO/releases/latest)
 [![.NET](https://img.shields.io/badge/.NET-10-512BD4?style=for-the-badge&logo=dotnet&logoColor=white)](https://dotnet.microsoft.com/)
-[![Release](https://img.shields.io/badge/release-v0.9.1-22C55E?style=for-the-badge)](https://github.com/bren-wp/MYWO/releases/tag/v0.9.1)
+[![Release](https://img.shields.io/badge/release-v0.9.2-22C55E?style=for-the-badge)](https://github.com/bren-wp/MYWO/releases/tag/v0.9.2)
 [![Windows Release](https://github.com/bren-wp/MYWO/actions/workflows/windows-release.yml/badge.svg)](https://github.com/bren-wp/MYWO/actions/workflows/windows-release.yml)
 
-**[Preuzmi Setup](https://github.com/bren-wp/MYWO/releases/download/v0.9.1/MYWO-Setup.exe)** ·
-**[Preuzmi Portable](https://github.com/bren-wp/MYWO/releases/download/v0.9.1/MYWO-Portable.exe)** ·
+**[Preuzmi Setup](https://github.com/bren-wp/MYWO/releases/download/v0.9.2/MYWO-Setup.exe)** ·
+**[Preuzmi Portable](https://github.com/bren-wp/MYWO/releases/download/v0.9.2/MYWO-Portable.exe)** ·
 **[Najnoviji release](https://github.com/bren-wp/MYWO/releases/latest)**
 
 </div>
@@ -38,7 +38,7 @@ MYWO koristi vlastiti tamni vizualni sustav prenesen iz odobrenih referentnih ek
 
 <img src="src/MYWO.Desktop/Assets/mywo-logo.png" alt="MYWO brand icon" width="72" align="right">
 
-Od v0.9.1 sučelje ima **full, compact i narrow** način rada. Na manjim ekranima navigacija se pretvara u ikon-only prikaz, toolbar i editor drawer se sužavaju, akcijske trake se prelamaju bez preklapanja, a dijalozi poštuju raspoloživi Windows work area. Na 2K/4K ekranima zadržavaju se layout rounding, pixel snapping i high-quality bitmap scaling.
+Od v0.9.2 sučelje ima **full, compact i narrow** način rada. Dashboard, Objava, API i Promjene cijena dodatno reflowaju KPI kartice na užim prozorima, a API, Arhiva i Promjene cijena imaju vertikalni fallback umjesto rezanja donjeg sadržaja. Na manjim ekranima navigacija se pretvara u ikon-only prikaz, toolbar i editor drawer se sužavaju, akcijske trake se prelamaju bez preklapanja, a dijalozi poštuju raspoloživi Windows work area. Na 2K/4K ekranima zadržavaju se layout rounding, pixel snapping i high-quality bitmap scaling.
 
 ## Ključne mogućnosti
 
@@ -93,7 +93,7 @@ API ključevi nastaju sigurnim RNG-om i u bazi se čuva samo hash. Lokalni API s
 ```powershell
 dotnet restore .\MYWO.sln
 dotnet build .\MYWO.sln -c Release
-.\scripts\build-release.ps1 -Version 0.9.1
+.\scripts\build-release.ps1 -Version 0.9.2
 ```
 
 ## Dokumentacija
