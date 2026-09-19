@@ -6,11 +6,13 @@
         <Grid Margin="22">
             <Grid.RowDefinitions><RowDefinition Height="62"/><RowDefinition Height="*"/><RowDefinition Height="58"/></Grid.RowDefinitions>
             <Grid MouseLeftButtonDown="DialogHeader_MouseLeftButtonDown"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="42"/></Grid.ColumnDefinitions><StackPanel VerticalAlignment="Center"><TextBlock x:Name="Heading" FontSize="22" FontWeight="SemiBold"/><TextBlock Text="Organizirajte podatke unutar aktivne tvrtke." Foreground="{StaticResource MutedBrush}" FontSize="11"/></StackPanel><Button Grid.Column="1" Style="{StaticResource GhostButton}" Content="✕" IsCancel="True"/></Grid>
-            <StackPanel Grid.Row="1">
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                <StackPanel Margin="0,0,8,0">
                 <TextBlock Text="Naziv *"/><TextBox x:Name="NameBox" MaxLength="150"/>
                 <StackPanel x:Name="KindPanel" Margin="0,10,0,0"><TextBlock Text="Primjena"/><ComboBox x:Name="KindBox"><ComboBoxItem Content="Proizvodi i usluge" Tag="both"/><ComboBoxItem Content="Samo proizvodi" Tag="product"/><ComboBoxItem Content="Samo usluge" Tag="service"/></ComboBox></StackPanel>
                 <Border Style="{StaticResource SoftCardBorder}" Padding="10,6" Margin="0,12,0,0"><CheckBox x:Name="ActiveBox" Content="Aktivno"/></Border>
             </StackPanel>
+            </ScrollViewer>
             <Grid Grid.Row="2"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="130"/><ColumnDefinition Width="150"/></Grid.ColumnDefinitions><Button Grid.Column="1" Style="{StaticResource SecondaryButton}" Content="Odustani" IsCancel="True"/><Button Grid.Column="2" Style="{StaticResource PrimaryButton}" Content="Spremi" IsDefault="True" Click="Save_Click"/></Grid>
         </Grid>
     </Border>
