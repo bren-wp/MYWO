@@ -1,7 +1,7 @@
 $ErrorActionPreference = 'Stop'
 Set-StrictMode -Version Latest
 $root = Split-Path -Parent $PSScriptRoot
-$version = '0.9.2'
+$version = '0.9.3'
 
 Write-Host '[1/6] Validating XAML/XML...'
 Get-ChildItem (Join-Path $root 'src\MYWO.Desktop') -Filter '*.xaml' -Recurse | ForEach-Object {
@@ -15,13 +15,32 @@ $geometry = @(
     'Width="1380" Height="950"',
     'x:Name="SidebarColumn" Width="214"',
     'RowDefinition Height="42"',
-    'RowDefinition Height="68"',
+    'x:Name="MainToolbarRow" Height="68"',
     'x:Name="ProductDrawer" Grid.RowSpan="3" Panel.ZIndex="30" Width="422"',
     'x:Name="ServiceDrawer" Grid.RowSpan="3" Panel.ZIndex="30" Width="420"',
     'Source="Assets/mywo-logo.png"'
 )
 foreach ($token in $geometry) {
     if (-not $main.Contains($token)) { throw "Reference geometry/design token missing: $token" }
+}
+
+foreach ($token in @(
+    'x:Name="SidebarLogoRow"',
+    'x:Name="PageHeaderRow"',
+    'x:Name="CategoriesTreeColumn"',
+    'x:Name="SettingsPrimaryRow"',
+    'x:Name="SettingsSecondaryRow"',
+    'x:Name="SettingsCompaniesCard"',
+    'x:Name="SettingsSystemCard"'
+)) {
+    if (-not $main.Contains($token)) { throw "Responsive layout token missing: $token" }
+}
+
+$manifestPath = Join-Path $root 'src\MYWO.Desktop\app.manifest'
+if (-not (Test-Path $manifestPath)) { throw 'Missing Per-Monitor DPI manifest.' }
+$manifest = Get-Content $manifestPath -Raw
+foreach ($token in @('PerMonitorV2','longPathAware')) {
+    if (-not $manifest.Contains($token)) { throw "DPI/manifest token missing: $token" }
 }
 
 $app = Get-Content (Join-Path $root 'src\MYWO.Desktop\App.xaml') -Raw
