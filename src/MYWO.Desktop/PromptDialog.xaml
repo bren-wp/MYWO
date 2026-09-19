@@ -5,7 +5,9 @@
     <Border Background="{StaticResource SurfaceBrush}" BorderBrush="#2B4968" BorderThickness="1" CornerRadius="12">
         <Grid Margin="22"><Grid.RowDefinitions><RowDefinition Height="58"/><RowDefinition Height="*"/><RowDefinition Height="58"/></Grid.RowDefinitions>
             <Grid MouseLeftButtonDown="DialogHeader_MouseLeftButtonDown"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="42"/></Grid.ColumnDefinitions><TextBlock x:Name="Heading" FontSize="22" FontWeight="SemiBold" VerticalAlignment="Center"/><Button Grid.Column="1" Style="{StaticResource GhostButton}" Content="✕" IsCancel="True"/></Grid>
-            <StackPanel Grid.Row="1"><TextBlock Text="Naziv" Foreground="{StaticResource MutedBrush}"/><TextBox x:Name="ValueBox" MaxLength="160"/></StackPanel>
+            <ScrollViewer Grid.Row="1" VerticalScrollBarVisibility="Auto" HorizontalScrollBarVisibility="Disabled">
+                <StackPanel Margin="0,0,8,0"><TextBlock Text="Naziv" Foreground="{StaticResource MutedBrush}"/><TextBox x:Name="ValueBox" MaxLength="160"/></StackPanel>
+            </ScrollViewer>
             <Grid Grid.Row="2"><Grid.ColumnDefinitions><ColumnDefinition/><ColumnDefinition Width="130"/><ColumnDefinition Width="150"/></Grid.ColumnDefinitions><Button Grid.Column="1" Style="{StaticResource SecondaryButton}" Content="Odustani" IsCancel="True"/><Button Grid.Column="2" Style="{StaticResource PrimaryButton}" Content="U redu" IsDefault="True" Click="Ok_Click"/></Grid>
         </Grid>
     </Border>
