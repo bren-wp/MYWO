@@ -1,6 +1,6 @@
 # MYWO responsive UI / UX
 
-MYWO v0.9.2 keeps the approved 1380×950 reference composition as the full desktop layout, while adapting safely to smaller and larger Windows work areas.
+MYWO v0.9.3 keeps the approved 1380×950 reference composition as the full desktop layout, while adapting safely to smaller and larger Windows work areas.
 
 ## Adaptive modes
 
@@ -43,3 +43,27 @@ Windows CI additionally compiles the solution, starts Portable, verifies portabl
 ## Dense modules
 
 At the narrow breakpoint Dashboard, Publication, API and Price Changes reflow KPI/action groups into additional rows. API, Archive and Price Changes also use vertical fallback scrolling, so short 600–768 px laptop work areas do not compress the bottom sections into unusable space.
+
+
+## Per-monitor DPI
+
+MYWO v0.9.3 declares **PerMonitorV2** awareness. Window fitting uses the work area of the actual monitor that owns the WPF window and converts native monitor coordinates to WPF device-independent pixels using that monitor's DPI scale.
+
+This matters for mixed-DPI systems such as a 150% laptop display combined with a 100% or 200% external monitor.
+
+## Short-window mode
+
+When the available MYWO window height falls below 760 DIP, the shell reduces non-essential vertical chrome:
+
+- sidebar logo region becomes shorter;
+- toolbar and page-header rows become shorter;
+- the promotional sidebar card is hidden;
+- primary content receives more usable vertical space.
+
+## Administration reflow
+
+Below 1000 DIP width, the company-management card and system-settings card are no longer forced side by side. They are placed one below the other inside the existing settings ScrollViewer, preserving usable input widths without relying on horizontal scrolling.
+
+## Data-heavy screens
+
+All DataGrid controls explicitly use row/column virtualization with recycling and automatic scrollbars. This reduces visual-tree pressure when catalogs contain hundreds or thousands of products/services.
